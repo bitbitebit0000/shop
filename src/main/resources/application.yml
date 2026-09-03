@@ -1,9 +1,10 @@
 spring:
   datasource:
-    url: jdbc:h2:~/my-awesome-project;AUTO_SERVER=TRUE
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    # Render 환경변수가 있으면 해당 값 사용, 없으면 로컬 H2 DB 사용
+    url: ${SPRING_DATASOURCE_URL:jdbc:h2:~/my-awesome-project;AUTO_SERVER=TRUE}
+    username: ${SPRING_DATASOURCE_USERNAME:sa}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.h2.Driver}
 
   h2:
     console:
@@ -12,7 +13,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         show_sql: true
@@ -26,7 +27,5 @@ logging:
 # 카카오페이 API 설정
 kakao:
   pay:
-    # 환경변수 KAKAO_ADMIN_KEY가 있으면 그 값을 쓰고,
-    # 없으면 콜론(:) 뒤의 기본 키 값을 사용하라는 의미입니다.
     admin-key: ${KAKAO_ADMIN_KEY:08ca6cf208732644b8bf804b540db9dd}
     cid: TC0ONETIME
