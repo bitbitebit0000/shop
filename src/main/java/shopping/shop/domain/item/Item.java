@@ -1,0 +1,39 @@
+package shopping.shop.domain.item;
+
+import shopping.shop.domain.OrderItem;
+import shopping.shop.exception.NotEnoughStockException;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Getter @Setter
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "dtype")
+public abstract class Item {
+
+    @Id @GeneratedValue
+    @Column(name = "item_id")
+    private Long id;
+    private String name;
+    private int price;
+    private int stockQuantity;
+
+    @OneToMany(mappedBy = "item")
+    private List<OrderItem> orderItems = new ArrayList<>();
+
+    public void addStock(int quantity) {
+        stockQuantity += quantity;
+    }
+
+    public void remove(int quantity) {
+        int restStock = stockQuantity - quantity;
+        if(restStock < 0) {
+            throw new NotEnoughStockException("need more stock");
+        }
+        stockQuantity = restStock;
+    }
+}

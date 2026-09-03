@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지 - CommerceLab</title>
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #212529;
+            --sub-text: #6c757d;
+            --border: #e9ecef;
+            --accent: #2563eb;
+            --danger: #dc2626;
+            --success: #16a34a;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.5; }
+
+        /* Header */
+        header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.25rem; font-weight: bold; color: var(--accent); text-decoration: none; }
+        nav a { margin-left: 1rem; text-decoration: none; color: var(--text); font-size: 0.9rem; font-weight: 500; }
+
+        /* Container & Grid Layout */
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+        .mypage-grid { display: grid; grid-template-columns: 260px 1fr; gap: 1.5rem; }
+
+        /* Sidebar Profile Card */
+        .profile-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; text-align: center; height: fit-content; }
+        .profile-avatar { font-size: 2.8rem; margin-bottom: 0.5rem; }
+        .profile-name { font-size: 1.15rem; font-weight: bold; }
+        .profile-email { font-size: 0.85rem; color: var(--sub-text); margin-bottom: 1rem; }
+
+        .address-box { text-align: left; background: var(--bg); padding: 0.8rem; border-radius: 6px; border: 1px solid var(--border); font-size: 0.85rem; }
+        .address-title { font-weight: bold; color: var(--text); margin-bottom: 0.2rem; display: block; }
+
+        /* Main Section */
+        .section-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 1rem; border-left: 4px solid var(--accent); padding-left: 0.5rem; }
+
+        .order-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+        .order-header { display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 0.6rem; margin-bottom: 0.8rem; font-size: 0.85rem; color: var(--sub-text); }
+        .order-body { display: flex; justify-content: space-between; align-items: center; }
+
+        /* Badges */
+        .badge { padding: 0.25rem 0.55rem; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
+        .badge-paid { background: #dcfce7; color: var(--success); }
+        .badge-ready { background: #fef9c3; color: #854d0e; }
+        .badge-shipped { background: #dbeafe; color: var(--accent); }
+        .badge-delivered { background: #e2e8f0; color: var(--text); }
+
+        /* Buttons */
+        .btn-track { background: var(--card-bg); border: 1px solid var(--accent); color: var(--accent); padding: 0.4rem 0.85rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold; cursor: pointer; text-decoration: none; transition: 0.2s; }
+        .btn-track:hover { background: var(--accent); color: #ffffff; }
+
+        /* Footer */
+        footer { text-align: center; padding: 2rem; color: var(--sub-text); border-top: 1px solid var(--border); font-size: 0.85rem; margin-top: 3rem; }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+    <a href="/" class="logo">CommerceLab</a>
+    <nav>
+        <a href="/createItemForm">상품등록/주문</a>
+        <a href="/items">상품목록</a>
+        <a href="/orders">주문조회</a>
+        <a href="/mypage" style="font-weight: bold; color: var(--accent);">마이페이지</a>
+        <a href="/login">로그인</a>
+    </nav>
+</header>
+
+<!-- Main Container -->
+<main class="container">
+    <div class="mypage-grid">
+
+        <!-- 좌측 프로필 & 배송지 카드 -->
+        <aside class="profile-card">
+            <div class="profile-avatar">👤</div>
+            <div class="profile-name" th:text="${myPage.memberName}">홍길동</div>
+            <div class="profile-email" th:text="${myPage.email}">user@example.com</div>
+
+            <div class="address-box">
+                <span class="address-title">🏠 기본 배송지</span>
+                <span th:text="${myPage.city} + ' ' + ${myPage.street}">서울시 강남구 테헤란로 123</span><br>
+                <span th:text="'(' + ${myPage.zipcode} + ')'" style="color: var(--sub-text);">(06123)</span>
+            </div>
+        </aside>
+
+        <!-- 우측 주문 및 배송 현황 목록 -->
+        <section>
+            <div class="section-title">📦 주문 및 배송 현황</div>
+
+            <!-- 주문 카드 반복 -->
+            <div th:each="order : ${myPage.orders}" class="order-card">
+                <div class="order-header">
+                    <span th:text="'주문일자: ' + ${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}">2026-09-03 14:20</span>
+                    <span th:text="'주문번호: #' + ${order.orderId}">#10024</span>
+                </div>
+
+                <div class="order-body">
+                    <div>
+                        <div style="font-weight: bold; font-size: 1rem; margin-bottom: 0.2rem;" th:text="${order.itemName}">고급 게이밍 키보드</div>
+                        <div style="font-size: 0.85rem; color: var(--sub-text);"
+                             th:text="${order.count} + '개 | ' + ${#numbers.formatInteger(order.totalPrice, 0, 'COMMA')} + '원'">
+                            1개 | 89,000원
+                        </div>
+                    </div>
+
+                    <div style="text-align: right;">
+                        <div style="margin-bottom: 0.5rem;">
+                            <!-- 결제 상태 -->
+                            <span th:if="${order.orderStatus.name() == 'PAID'}" class="badge badge-paid">결제완료</span>
+                            <span th:if="${order.orderStatus.name() == 'BEFORE_PAYMENT'}" class="badge badge-ready">결제대기</span>
+
+                            <!-- 배송 상태 -->
+                            <span th:if="${order.deliveryStatus == 'SHIPPED'}" class="badge badge-shipped">배송중</span>
+                            <span th:if="${order.deliveryStatus == 'DELIVERED'}" class="badge badge-delivered">배송완료</span>
+                        </div>
+
+                        <!-- 타임리프 전용 주석 처리 (*-- ... --*) 로 감싸서 실행 제외 -->
+                        <!--*
+                        <button class="btn-track"
+                                th:if="${order.trackingNumber != null}"
+                                th:onclick="|alert('택배사: ' + '${order.courierCompany}' + '\n운송장번호: ' + '${order.trackingNumber}')|">
+                            🚚 배송 추적
+                        </button>
+                        *-->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 주문 내역이 없을 경우 -->
+            <div th:if="${#lists.isEmpty(myPage.orders)}" class="order-card" style="text-align: center; color: var(--sub-text); padding: 3rem 1rem;">
+                최근 주문 및 배송 내역이 없습니다.
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<!-- Footer -->
+<footer>
+    <p>CommerceLab Portfolio Demo Page | Backend Powered by Spring Boot & MySQL</p>
+</footer>
+
+</body>
+</html>

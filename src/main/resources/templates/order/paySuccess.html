@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>결제 완료</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f8f9fa; }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 400px; text-align: center; }
+        .title { color: #2b8a3e; margin-bottom: 20px; }
+        .info-group { text-align: left; margin: 15px 0; border-top: 1px solid #eee; padding-top: 15px; }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .btn { display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #333; color: white; text-decoration: none; border-radius: 6px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2 class="title">🎉 결제가 완료되었습니다!</h2>
+
+    <div class="info-group">
+        <div class="info-row">
+            <span>주문 번호:</span>
+            <strong th:text="${info.partner_order_id}">1</strong>
+        </div>
+        <div class="info-row">
+            <span>상품명:</span>
+            <strong th:text="${info.item_name}">상품 이름</strong>
+        </div>
+        <div class="info-row">
+            <span>결제 금액:</span>
+            <strong th:text="${#numbers.formatInteger(info.amount.total, 0, 'COMMA')} + '원'">10,000원</strong>
+        </div>
+        <div class="info-row">
+            <span>결제 수단:</span>
+            <strong th:text="${info.payment_method_type}">MONEY</strong>
+        </div>
+        <div class="info-row">
+            <span>결제 일시:</span>
+            <span th:text="${info.approved_at}">2026-09-03</span>
+        </div>
+    </div>
+
+    <a href="/" class="btn">메인으로 이동</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CommerceLab - 주문 완료</title>
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #212529;
+            --sub-text: #6c757d;
+            --border: #e9ecef;
+            --accent: #2563eb;
+            --success: #16a34a;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.5; }
+
+        header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.25rem; font-weight: bold; color: var(--accent); text-decoration: none; }
+
+        .container { max-width: 550px; margin: 3rem auto; padding: 0 1rem; }
+        .complete-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 2.5rem 2rem; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+
+        .success-icon { width: 64px; height: 64px; background: #dcfce7; color: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; font-size: 2rem; font-weight: bold; }
+        .title { font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem; }
+        .subtitle { color: var(--sub-text); font-size: 0.95rem; margin-bottom: 2rem; }
+
+        .info-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; text-align: left; margin-bottom: 2rem; }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 0.6rem; font-size: 0.95rem; }
+        .info-row:last-child { margin-bottom: 0; }
+        .info-label { color: var(--sub-text); }
+        .info-value { font-weight: 600; }
+        .total-amount { color: var(--accent); font-size: 1.1rem; border-top: 1px dashed var(--border); padding-top: 0.6rem; margin-top: 0.6rem; }
+
+        .btn-group { display: flex; gap: 0.75rem; }
+        .btn { flex: 1; padding: 0.85rem; border-radius: 8px; font-weight: bold; font-size: 0.95rem; text-decoration: none; text-align: center; border: none; cursor: pointer; }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-secondary { background: #e2e8f0; color: var(--text); }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="/" class="logo">CommerceLab</a>
+</header>
+
+<main class="container">
+    <div class="complete-card">
+        <div class="success-icon">✓</div>
+        <h2 class="title">주문이 정상 완료되었습니다!</h2>
+        <p class="subtitle">고객님의 주문이 성공적으로 접수되었습니다.</p>
+
+        <div class="info-box">
+            <!-- 1. 주문 번호 (1024 등) -->
+            <div class="info-row">
+                <span class="info-label">주문 번호</span>
+                <span class="info-value" th:text="${order.id}">1024</span>
+            </div>
+            <!-- 2. 주문 상품 이름 및 수량 -->
+            <div class="info-row">
+                <span class="info-label">주문 상품</span>
+                <span class="info-value" th:text="${order.orderItems[0].item.name} + ' (' + ${order.orderItems[0].count} + '개)'">상품명</span>
+            </div>
+            <!-- 3. 결제 수단 (CARD, KAKAOPAY 등) -->
+            <div class="info-row">
+                <span class="info-label">결제 수단</span>
+                <span class="info-value" th:text="${payType}">CARD</span>
+            </div>
+            <!-- 4. 최종 결제 금액 -->
+            <div class="info-row total-amount">
+                <span class="info-label" style="color:var(--text)">최종 결제 금액</span>
+                <span class="info-value" th:text="${#numbers.formatInteger(order.getTotalPrice(), 0, 'COMMA')} + '원'">333원</span>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <a href="/" class="btn btn-secondary">메인으로</a>
+            <a href="/orders" class="btn btn-primary">주문 내역 전체 보기</a>
+        </div>
+    </div>
+</main>
+<script th:inline="javascript">
+    var errorMessage = /*[[${errorMessage}]]*/ null;
+    if (errorMessage) {
+        alert(errorMessage);
+    }
+
+</script>
+</body>
+</html>

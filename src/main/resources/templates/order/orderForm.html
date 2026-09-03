@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commerce Lab - Order</title>
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #212529;
+            --sub-text: #6c757d;
+            --border: #e9ecef;
+            --accent: #2563eb;
+            --danger: #dc2626;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.5; }
+
+        /* Header */
+        header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.25rem; font-weight: bold; color: var(--accent); text-decoration: none; }
+        nav a { margin-left: 1rem; text-decoration: none; color: var(--text); font-size: 0.9rem; font-weight: 500; }
+
+        /* Layout Container */
+        .container { max-width: 600px; margin: 2.5rem auto; padding: 0 1rem; }
+
+        /* Form Card */
+        .form-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .form-header { margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--accent); }
+        .form-title { font-size: 1.25rem; font-weight: bold; color: var(--text); }
+
+        /* Form Group */
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text); }
+        .form-control { width: 100%; padding: 0.65rem 0.8rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; outline: none; background-color: #fff; transition: border-color 0.2s; }
+        .form-control:focus { border-color: var(--accent); }
+
+        /* Select Box Custom */
+        select.form-control { cursor: pointer; }
+
+        /* User Info Box */
+        .user-info-box { background: #f1f5f9; border: 1px solid var(--border); padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.9rem; font-weight: 600; color: var(--text); }
+
+        /* Button Group */
+        .btn-group { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.75rem; }
+        .btn-row { display: flex; gap: 0.75rem; }
+        .btn { flex: 1; padding: 0.75rem; border-radius: 6px; font-weight: bold; font-size: 0.95rem; cursor: pointer; text-align: center; text-decoration: none; border: none; }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-secondary { background: #e2e8f0; color: var(--text); }
+        .btn-secondary:hover { background: #cbd5e1; }
+
+        /* 카카오페이 전용 버튼 스타일 */
+        .btn-kakaopay { background-color: #FEE500; color: #191919; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-kakaopay:hover { background-color: #fada0A; }
+
+        /* Footer */
+        footer { text-align: center; padding: 2rem; color: var(--sub-text); border-top: 1px solid var(--border); font-size: 0.85rem; margin-top: 3rem; }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+    <a href="/" class="logo">CommerceLab</a>
+    <nav>
+        <a href="/">메인으로</a>
+        <a href="/items">상품목록</a>
+        <a href="/orders">주문내역</a>
+    </nav>
+</header>
+
+<!-- Main Container -->
+<main class="container">
+    <div class="form-card">
+        <div class="form-header">
+            <h2 class="form-title">상품 주문 작성</h2>
+        </div>
+
+        <!-- 기존 /order/checkout 처리용 Form -->
+        <form th:action="@{/order/checkout}" method="post">
+
+            <!-- 1. 주문 회원 정보 -->
+            <div class="form-group">
+                <label>주문 회원</label>
+                <div class="user-info-box">
+                    <span th:text="${loginMember.name}">홍길동</span> 님
+                </div>
+            </div>
+
+            <!-- 2. 상품 선택 -->
+            <div class="form-group">
+                <label for="itemId">주문 상품</label>
+                <select name="itemId" id="itemId" class="form-control" required>
+                    <option value="">-- 상품을 선택하세요 --</option>
+                    <option th:each="item : ${items}"
+                            th:value="${item.id}"
+                            th:text="${item.name} + ' - ' + ${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원 (재고: ' + ${item.stockQuantity} + '개)'">
+                        [한정특가] 고급 게이밍 키보드
+                    </option>
+                </select>
+            </div>
+
+            <!-- 3. 수량 선택 -->
+            <div class="form-group">
+                <label for="count">주문 수량 (개)</label>
+                <input type="number" name="count" id="count" class="form-control" placeholder="구매하실 수량을 입력하세요" min="1" value="1" required>
+            </div>
+
+            <!-- 버튼 영역 -->
+            <div class="btn-group">
+                <!-- 카카오페이 바로결제 버튼 (Form의 action 경로를 /order/pay/ready 로 변경) -->
+                <button type="submit" th:formaction="@{/order/pay/ready}" class="btn btn-kakaopay">
+                    💛 카카오페이로 빠른 결제
+                </button>
+
+                <div class="btn-row">
+                    <a href="/" class="btn btn-secondary">취소</a>
+                    <button type="submit" class="btn btn-primary">일반 주문하기</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer>
+    <p>CommerceLab Portfolio Demo Page | Backend Powered by Spring Boot & MySQL</p>
+</footer>
+
+</body>
+</html>

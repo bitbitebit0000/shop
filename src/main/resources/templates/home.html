@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commerce Lab - Live Hot Deal</title>
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #212529;
+            --sub-text: #6c757d;
+            --border: #e9ecef;
+            --accent: #2563eb;
+            --danger: #dc2626;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.5; }
+
+        /* Header */
+        header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.25rem; font-weight: bold; color: var(--accent); text-decoration: none; }
+        nav a { margin-left: 1rem; text-decoration: none; color: var(--text); font-size: 0.9rem; font-weight: 500; }
+
+        /* Layout Container */
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+
+        /* Admin Mode Quick Banner */
+        .admin-banner {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 0.9rem 1.25rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #334155;
+        }
+        .admin-banner-info { display: flex; align-items: center; gap: 0.6rem; }
+        .admin-tag {
+            background: #38bdf8;
+            color: #0f172a;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+        .admin-banner-title { font-size: 0.9rem; font-weight: 600; color: #e2e8f0; }
+        .btn-admin {
+            background: #2563eb;
+            color: #ffffff;
+            padding: 0.45rem 0.9rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .btn-admin:hover { background: #1d4ed8; }
+
+        /* Banner / Time Deal Section */
+        .time-deal-banner { background: #1e293b; color: #fff; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .deal-badge { background: var(--danger); color: #fff; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+        .deal-timer { font-family: monospace; font-size: 1.2rem; color: #fba100; font-weight: bold; }
+
+        /* Section Title */
+        .section-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem; border-left: 4px solid var(--accent); padding-left: 0.5rem; }
+
+        /* Product Grid */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 3rem; }
+        .product-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-img { background: #e2e8f0; height: 160px; display: flex; align-items: center; justify-content: center; color: var(--sub-text); font-size: 0.85rem; }
+        .product-info { padding: 1rem; flex-grow: 1; }
+        .product-title { font-size: 0.95rem; font-weight: bold; margin-bottom: 0.4rem; }
+        .product-price { font-size: 1.1rem; font-weight: bold; color: var(--text); }
+        .stock-count { font-size: 0.8rem; color: var(--danger); margin-top: 0.2rem; }
+
+        /* Button */
+        .btn-order { display: block; width: 100%; padding: 0.6rem; background: var(--accent); color: #fff; border: none; font-weight: bold; cursor: pointer; text-align: center; border-radius: 0 0 6px 6px; text-decoration: none; }
+        .btn-order:hover { background: #1d4ed8; }
+
+        /* Footer */
+        footer { text-align: center; padding: 2rem; color: var(--sub-text); border-top: 1px solid var(--border); font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="/" class="logo">CommerceLab</a>
+    <nav>
+        <a href="/createItemForm">상품등록/주문</a>
+        <a href="/items">상품목록</a>
+        <a href="/orders">주문조회</a>
+
+        <!-- 1. 로그인 상태일 때 표시 (세션에 loginMember가 존재하는 경우) -->
+        <a th:if="${session.loginMember != null}" href="/mypage" style="font-weight: bold; color: var(--accent);">마이페이지</a>
+
+        <!-- [수정] POST 전송을 위한 숨김 폼과 JavaScript 연결 링크 -->
+        <th:block th:if="${session.loginMember != null}">
+            <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;"></form>
+            <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;">로그아웃</a>
+        </th:block>
+
+        <!-- 2. 비로그인 상태일 때 표시 (세션에 loginMember가 없는 경우) -->
+        <a th:if="${session.loginMember == null}" href="/login">로그인</a>
+        <a th:if="${session.loginMember == null}" href="/sign-up">회원가입</a>
+    </nav>
+</header>
+
+
+<!-- Main Content -->
+<main class="container">
+
+    <!-- 관리자 모드 이동 배너 -->
+    <div class="admin-banner">
+        <div class="admin-banner-info">
+            <span class="admin-tag">ADMIN</span>
+            <span class="admin-banner-title">관리자 전용 페이지로 이동하여 신규 상품을 등록하시겠습니까?</span>
+        </div>
+        <a href="/admin" class="btn-admin">관리자 모드 이동 &rarr;</a>
+    </div>
+
+    <!-- 타임딜 / 라이브 세일 배너 -->
+    <div class="time-deal-banner">
+        <div>
+            <span class="deal-badge">HOT TIME DEAL</span>
+            <h2 style="font-size: 1.1rem; margin-top: 0.4rem;">오늘의 한정 수량 선착순 타임딜</h2>
+        </div>
+        <div class="deal-timer">남은 시간 00:14:52</div>
+    </div>
+
+    <!-- 상품 목록 -->
+    <div class="section-title">판매 중인 추천 상품</div>
+
+    <div class="product-grid">
+
+        <div class="product-card">
+            <div class="product-img">ITEM IMAGE</div>
+            <div class="product-info">
+                <div class="product-title">[한정특가] 고급 게이밍 키보드</div>
+                <div class="product-price">89,000원</div>
+                <div class="stock-count">남은 재고: 12개</div>
+            </div>
+            <a href="/order?itemId=1" class="btn-order">바로 구매하기</a>
+        </div>
+
+        <div class="product-card">
+            <div class="product-img">ITEM IMAGE</div>
+            <div class="product-info">
+                <div class="product-title">무선 노이즈캔슬링 헤드폰</div>
+                <div class="product-price">198,000원</div>
+                <div class="stock-count" style="color: var(--sub-text);">재고 여유</div>
+            </div>
+            <a href="/order?itemId=2" class="btn-order">바로 구매하기</a>
+        </div>
+
+        <div class="product-card">
+            <div class="product-img">ITEM IMAGE</div>
+            <div class="product-info">
+                <div class="product-title">초고속 C-Type 충전기 65W</div>
+                <div class="product-price">24,500원</div>
+                <div class="stock-count" style="color: var(--sub-text);">재고 여유</div>
+            </div>
+            <a href="/order?itemId=3" class="btn-order">바로 구매하기</a>
+        </div>
+
+        <div class="product-card">
+            <div class="product-img">ITEM IMAGE</div>
+            <div class="product-info">
+                <div class="product-title">스마트 디스플레이 거치대</div>
+                <div class="product-price">15,000원</div>
+                <div class="stock-count" style="color: var(--sub-text);">재고 여유</div>
+            </div>
+            <a href="/createItemForm?itemId=4" class="btn-order">바로 구매하기</a>
+        </div>
+
+    </div>
+</main>
+
+<!-- Footer -->
+<footer>
+    <p>© 2026 <strong>CommerceLab</strong>. All rights reserved.</p>
+    <p style="font-size: 0.8rem; color: var(--sub-text); margin-top: 0.25rem;">
+        Powered by Spring Boot, Spring Data JPA, Thymeleaf & MySQL
+    </p>
+</footer>
+</body>
+</html>

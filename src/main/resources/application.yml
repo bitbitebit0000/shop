@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    url: jdbc:h2:~/my-awesome-project;AUTO_SERVER=TRUE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
+
+# 카카오페이 API 설정
+kakao:
+  pay:
+    # 환경변수 KAKAO_ADMIN_KEY가 있으면 그 값을 쓰고,
+    # 없으면 콜론(:) 뒤의 기본 키 값을 사용하라는 의미입니다.
+    admin-key: ${KAKAO_ADMIN_KEY:08ca6cf208732644b8bf804b540db9dd}
+    cid: TC0ONETIME

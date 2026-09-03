@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 목록</title>
+</head>
+<body>
+
+<h2>📋 전체 회원 목록</h2>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th># (ID)</th>
+        <th>회원 아이디(이름)</th>
+        <th>비밀번호</th>
+        <th>소속 팀</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- members가 비어있지 않을 때 출력 -->
+    <tr th:each="member : ${members}">
+        <td th:text="${member.id}">1</td>
+        <td th:text="${member.name}">user123</td>
+        <td th:text="${member.password}">pass1234</td>
+        <td th:text="${member.team?.name}">팀 없음</td>
+    </tr>
+    <!-- members가 비어있을 때 출력 -->
+    <tr th:if="${#lists.isEmpty(members)}">
+        <td colspan="4" style="text-align: center;">등록된 회원이 없습니다.</td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+
+<div>
+    <a href="/">
+        <button type="button">메인으로 돌아가기</button>
+    </a>
+</div>
+
+</body>
+</html>

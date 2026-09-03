@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commerce Lab - Admin Item Create</title>
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #212529;
+            --sub-text: #6c757d;
+            --border: #e9ecef;
+            --accent: #2563eb;
+            --danger: #dc2626;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.5; }
+
+        /* Header */
+        header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.25rem; font-weight: bold; color: var(--accent); text-decoration: none; }
+        nav a { margin-left: 1rem; text-decoration: none; color: var(--text); font-size: 0.9rem; font-weight: 500; }
+        .admin-badge { background: #1e293b; color: #fff; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; margin-left: 0.5rem; }
+
+        /* Layout Container */
+        .container { max-width: 600px; margin: 2.5rem auto; padding: 0 1rem; }
+
+        /* Form Card */
+        .form-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .form-header { margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--accent); }
+        .form-title { font-size: 1.25rem; font-weight: bold; color: var(--text); }
+
+        /* Form Group */
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text); }
+        .form-control { width: 100%; padding: 0.65rem 0.8rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+        .form-control:focus { border-color: var(--accent); }
+        .form-text { font-size: 0.8rem; color: var(--sub-text); margin-top: 0.3rem; }
+
+        /* Button Group */
+        .btn-group { display: flex; gap: 0.75rem; margin-top: 1.75rem; }
+        .btn { flex: 1; padding: 0.7rem; border-radius: 6px; font-weight: bold; font-size: 0.95rem; cursor: pointer; text-align: center; text-decoration: none; border: none; }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-secondary { background: #e2e8f0; color: var(--text); }
+        .btn-secondary:hover { background: #cbd5e1; }
+
+        /* Footer */
+        footer { text-align: center; padding: 2rem; color: var(--sub-text); border-top: 1px solid var(--border); font-size: 0.85rem; margin-top: 3rem; }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+    <div>
+        <a href="/" class="logo">CommerceLab</a>
+        <span class="admin-badge">ADMIN</span>
+    </div>
+    <nav>
+        <a href="/">메인으로</a>
+        <a href="/items">상품목록</a>
+        <a href="/orders">주문관리</a>
+    </nav>
+</header>
+
+<!-- Main Form Container -->
+<main class="container">
+    <div class="form-card">
+        <div class="form-header">
+            <h2 class="form-title">신규 상품 등록</h2>
+        </div>
+
+        <!-- POST 요청 보내는 Form (ItemForm 매핑) -->
+        <form th:action="@{/items/new}" th:object="${itemForm}" method="post">
+
+            <!-- 상품명 -->
+            <div class="form-group">
+                <label for="itemName">상품명</label>
+                <input type="text" id="itemName" th:field="*{name}" class="form-control" placeholder="예: [한정특가] 고급 게이밍 키보드" required>
+            </div>
+
+            <!-- 가격 -->
+            <div class="form-group">
+                <label for="itemPrice">판매 가격 (원)</label>
+                <input type="number" id="itemPrice" th:field="*{price}" class="form-control" placeholder="숫자만 입력하세요" min="0" required>
+            </div>
+
+            <!-- 재고 수량 -->
+            <div class="form-group">
+                <label for="itemCount">초기 재고 수량 (개)</label>
+                <input type="number" id="itemCount" th:field="*{count}" class="form-control" placeholder="수량을 입력하세요" min="1" required>
+                <p class="form-text">타임딜 진열 시 즉시 차감되는 재고 수량입니다.</p>
+            </div>
+
+            <!-- 버튼 영역 -->
+            <div class="btn-group">
+                <a href="/items" class="btn btn-secondary">취소</a>
+                <button type="submit" class="btn btn-primary">상품 등록하기</button>
+            </div>
+
+        </form>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer>
+    <p>CommerceLab Portfolio Demo Page | Backend Powered by Spring Boot & MySQL</p>
+</footer>
+
+</body>
+</html>

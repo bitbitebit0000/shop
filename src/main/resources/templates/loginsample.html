@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인 / 회원가입</title>
+</head>
+<body>
+
+<h2>Login & Sign Up</h2>
+
+<form action="/api/users/login" method="POST" th:object="${memberForm}">
+    <div>
+        <label for="username">ID:</label><br>
+        <!-- id="username" 추가 -->
+        <input type="text" id="username" th:field="*{username}" placeholder="USERID" required>
+    </div>
+    <br>
+    <div>
+        <label for="password">Password:</label><br>
+        <!-- id="password" 추가 -->
+        <input type="password" id="password" th:field="*{password}" required>
+    </div>
+    <br>
+    <button type="submit">Sign Up / Login</button>
+</form>
+
+</body>
+</html>

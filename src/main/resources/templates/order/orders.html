@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commerce Lab - Order List</title>
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #212529;
+            --sub-text: #6c757d;
+            --border: #e9ecef;
+            --accent: #2563eb;
+            --danger: #dc2626;
+            --success: #16a34a;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.5; }
+
+        /* Header */
+        header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.25rem; font-weight: bold; color: var(--accent); text-decoration: none; }
+        nav a { margin-left: 1rem; text-decoration: none; color: var(--text); font-size: 0.9rem; font-weight: 500; }
+
+        /* Layout Container */
+        .container { max-width: 1000px; margin: 2.5rem auto; padding: 0 1rem; }
+
+        /* Card Panel */
+        .list-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--accent); }
+        .list-title { font-size: 1.25rem; font-weight: bold; color: var(--text); }
+
+        /* Search / Filter Area */
+        .filter-form { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; }
+        .form-control { padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem; outline: none; }
+        .btn-search { background: var(--text); color: #fff; padding: 0.5rem 1rem; border: none; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; }
+
+        /* Table */
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem; }
+        th { background: #f1f5f9; color: var(--text); padding: 0.75rem 1rem; font-weight: 600; border-bottom: 2px solid var(--border); white-space: nowrap; }
+        td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        tr:hover { background-color: #f8fafc; }
+
+        /* Badges */
+        .badge-status { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; }
+        .badge-order { background: #dcfce7; color: var(--success); }
+        .badge-cancel { background: #fee2e2; color: var(--danger); }
+
+        /* Cancel Button */
+        .btn-cancel { background: #ef4444; color: #fff; border: none; padding: 0.35rem 0.75rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn-cancel:hover { background: #dc2626; }
+
+        /* Footer */
+        footer { text-align: center; padding: 2rem; color: var(--sub-text); border-top: 1px solid var(--border); font-size: 0.85rem; margin-top: 3rem; }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+    <a href="/" class="logo">CommerceLab</a>
+    <nav>
+        <a href="/">메인으로</a>
+        <a href="/order">상품주문</a>
+        <a href="/items">상품목록</a>
+    </nav>
+</header>
+
+<!-- Main Container -->
+<main class="container">
+    <div class="list-card">
+        <div class="list-header">
+            <h2 class="list-title">주문 내역 조회</h2>
+            <a href="/order" style="text-decoration: none; font-size: 0.85rem; font-weight: bold; color: var(--accent);">+ 새로 주문하기</a>
+        </div>
+
+        <!-- 검색 필터 (선택 사항) -->
+        <form class="filter-form" action="/orders" method="get">
+            <input type="text" name="memberName" class="form-control" placeholder="회원명 검색">
+            <select name="orderStatus" class="form-control">
+                <option value="">주문 상태 선택</option>
+                <option value="ORDER">주문완료(ORDER)</option>
+                <option value="CANCEL">주문취소(CANCEL)</option>
+            </select>
+            <button type="submit" class="btn-search">검색</button>
+        </form>
+
+        <!-- 주문 목록 테이블 -->
+        <div class="table-responsive">
+            <table>
+                <thead>
+                <tr>
+                    <th style="width: 8%;">#</th>
+                    <th style="width: 15%;">주문회원</th>
+                    <th style="width: 35%;">대표 상품명 / 수량</th>
+                    <th style="width: 15%;">상태</th>
+                    <th style="width: 15%;">주문일시</th>
+                    <th style="width: 12%;">관리</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Thymeleaf 반복문 (백엔드의 orders 리스트 순회) -->
+                <tr th:each="order : ${orders}">
+                    <td th:text="${order.id}">1</td>
+                    <td th:text="${order.member.name}" style="font-weight: 600;">홍길동</td>
+                    <!-- orderItems 중 첫 번째 아이템의 정보 출력 -->
+                    <td th:text="${order.orderItems[0].item.name} + ' (' + ${order.orderItems[0].count} + '개)'">
+                        [한정특가] 고급 게이밍 키보드 (1개)
+                    </td>
+                    <td>
+                        <!-- 주문 상태(ORDER / CANCEL) 분기 -->
+                        <span th:if="${order.orderStatus.name() == 'ORDER'}" class="badge-status badge-order">주문 완료</span>
+                        <span th:if="${order.orderStatus.name() == 'CANCEL'}" class="badge-status badge-cancel">주문 취소</span>
+                    </td>
+                    <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}">2026-09-02 14:30</td>
+                    <td>
+                        <!-- STATUS가 ORDER 상태일 때만 취소 버튼 노출 -->
+                        <form th:if="${order.orderStatus.name() == 'ORDER'}" th:action="@{/orders/{id}/cancel (id=${order.id})}" method="post">
+                            <button type="submit" class="btn-cancel">취소</button>
+                        </form>
+                    </td>
+                </tr>
+
+                <!-- 데이터가 없는 경우 -->
+                <tr th:if="${#lists.isEmpty(orders)}">
+                    <td colspan="6" style="text-align: center; color: var(--sub-text); padding: 2.5rem 0;">
+                        주문 내역이 존재하지 않습니다.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer>
+    <p>CommerceLab Portfolio Demo Page | Backend Powered by Spring Boot & MySQL</p>
+</footer>
+
+</body>
+</html>

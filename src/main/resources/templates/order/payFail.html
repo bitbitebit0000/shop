@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>결제 실패</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f8f9fa; }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 400px; text-align: center; }
+        .title { color: #c92a2a; margin-bottom: 15px; }
+        .desc { color: #666; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        .btn-group { display: flex; gap: 10px; justify-content: center; }
+        .btn { padding: 10px 18px; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: bold; }
+        .btn-primary { background-color: #333; color: white; }
+        .btn-secondary { background-color: #e9ecef; color: #495057; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2 class="title">❌ 결제에 실패하였습니다</h2>
+    <p class="desc">
+        결제 처리 중 오류가 발생했습니다.<br>
+        카드 정보 및 잔액을 확인 후 다시 시도해 주세요.
+    </p>
+
+    <div class="btn-group">
+        <a href="javascript:history.back()" class="btn btn-secondary">다시 시도</a>
+        <a href="/" class="btn btn-primary">메인으로 이동</a>
+    </div>
+</div>
+
+</body>
+</html>

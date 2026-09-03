@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>결제 취소</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f8f9fa; }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 400px; text-align: center; }
+        .title { color: #e8590c; margin-bottom: 15px; }
+        .desc { color: #666; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        .btn-group { display: flex; gap: 10px; justify-content: center; }
+        .btn { padding: 10px 18px; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: bold; }
+        .btn-primary { background-color: #333; color: white; }
+        .btn-secondary { background-color: #e9ecef; color: #495057; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2 class="title">⚠️ 결제가 취소되었습니다</h2>
+    <p class="desc">
+        사용자에 의해 결제가 중단되었습니다.<br>
+        주문 내용을 확인하신 후 다시 시도해 주세요.
+    </p>
+
+    <div class="btn-group">
+        <a href="javascript:history.back()" class="btn btn-secondary">이전으로</a>
+        <a href="/" class="btn btn-primary">메인으로 이동</a>
+    </div>
+</div>
+
+</body>
+</html>

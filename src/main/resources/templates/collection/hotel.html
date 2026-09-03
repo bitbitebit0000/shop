@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airbnb Clone - 숙소 예약</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; }
+        body { padding: 20px; background-color: #f7f7f7; }
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 { color: #ff385c; }
+
+        /* 검색 필터 영역 */
+        .search-bar {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .input-group { display: flex; flex-direction: column; flex: 1; }
+        .input-group label { font-size: 12px; font-weight: bold; margin-bottom: 5px; color: #555; }
+        .input-group input { padding: 8px; border: 1px solid #ccc; border-radius: 6px; }
+        .search-btn {
+            background-color: #ff385c;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .search-btn:hover { background-color: #e00b41; }
+
+        /* 숙소 리스트 영역 */
+        .room-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .room-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: transform 0.2s;
+        }
+        .room-card:hover { transform: translateY(-4px); }
+        .room-img { width: 100%; height: 180px; background-color: #ddd; object-fit: cover; }
+        .room-info { padding: 15px; }
+        .room-title { font-size: 16px; font-weight: bold; margin-bottom: 8px; }
+        .room-price { font-size: 14px; color: #333; margin-bottom: 12px; }
+        .reserve-btn {
+            width: 100%;
+            background-color: #222;
+            color: #fff;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🏠 Mini Airbnb</h1>
+    <p>Spring Boot & JPA 기반 숙소 예약 서비스</p>
+</header>
+
+<form class="search-bar" action="/rooms/search" method="GET">
+    <div class="input-group">
+        <label for="location">위치</label>
+        <input type="text" id="location" name="location" placeholder="어디로 떠나시나요?">
+    </div>
+    <div class="input-group">
+        <label for="checkIn">체크인</label>
+        <input type="date" id="checkIn" name="checkIn">
+    </div>
+    <div class="input-group">
+        <label for="checkOut">체크아웃</label>
+        <input type="date" id="checkOut" name="checkOut">
+    </div>
+    <button type="submit" class="search-btn">검색</button>
+</form>
+
+<main class="room-grid">
+
+    <div class="room-card">
+        <div class="room-img" style="background-image: url('https://via.placeholder.com/300x180');"></div>
+        <div class="room-info">
+            <div class="room-title">강남 프리미엄 루프탑 오피스텔</div>
+            <div class="room-price"><strong>₩ 120,000</strong> / 박</div>
+            <button class="reserve-btn" onclick="location.href='/rooms/1'">예약하기</button>
+        </div>
+    </div>
+
+    <div class="room-card">
+        <div class="room-img" style="background-image: url('https://via.placeholder.com/300x180');"></div>
+        <div class="room-info">
+            <div class="room-title">제주 애월 바다뷰 독채 펜션</div>
+            <div class="room-price"><strong>₩ 250,000</strong> / 박</div>
+            <button class="reserve-btn" onclick="location.href='/rooms/2'">예약하기</button>
+        </div>
+    </div>
+
+    <div class="room-card">
+        <div class="room-img" style="background-image: url('https://via.placeholder.com/300x180');"></div>
+        <div class="room-info">
+            <div class="room-title">해운대 오션뷰 감성 숙소</div>
+            <div class="room-price"><strong>₩ 180,000</strong> / 박</div>
+            <button class="reserve-btn" onclick="location.href='/rooms/3'">예약하기</button>
+        </div>
+    </div>
+
+</main>
+
+</body>
+</html>

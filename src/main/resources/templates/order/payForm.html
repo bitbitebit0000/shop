@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commerce Lab - Checkout</title>
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #212529;
+            --sub-text: #6c757d;
+            --border: #e9ecef;
+            --accent: #2563eb;
+            --success: #16a34a;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.5; }
+
+        /* Header */
+        header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.25rem; font-weight: bold; color: var(--accent); text-decoration: none; }
+
+        /* Layout Container */
+        .container { max-width: 600px; margin: 2.5rem auto; padding: 0 1rem; }
+
+        /* Card */
+        .pay-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .pay-header { margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--accent); }
+        .pay-title { font-size: 1.25rem; font-weight: bold; color: var(--text); }
+
+        /* Order Summary Section */
+        .section-title { font-size: 0.95rem; font-weight: 600; color: var(--sub-text); margin-bottom: 0.5rem; }
+        .summary-box { background: #f1f5f9; border-radius: 6px; padding: 1rem; margin-bottom: 1.5rem; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.95rem; }
+        .summary-row:last-child { margin-bottom: 0; }
+        .total-price { font-size: 1.15rem; font-weight: bold; color: var(--accent); border-top: 1px solid var(--border); margin-top: 0.5rem; padding-top: 0.5rem; }
+
+        /* Payment Method Options */
+        .pay-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.5rem; }
+        .pay-method-item input[type="radio"] { display: none; }
+        .pay-method-label { display: block; border: 1px solid var(--border); padding: 0.8rem; border-radius: 6px; text-align: center; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; }
+        .pay-method-item input[type="radio"]:checked + .pay-method-label { border-color: var(--accent); background: #eff6ff; color: var(--accent); }
+
+        /* Buttons */
+        .btn-group { display: flex; gap: 0.75rem; margin-top: 1.75rem; }
+        .btn { flex: 1; padding: 0.8rem; border-radius: 6px; font-weight: bold; font-size: 0.95rem; cursor: pointer; text-align: center; text-decoration: none; border: none; }
+        .btn-pay { background: var(--accent); color: #fff; }
+        .btn-pay:hover { background: #1d4ed8; }
+        .btn-cancel { background: #e2e8f0; color: var(--text); }
+
+        /* Footer */
+        footer { text-align: center; padding: 2rem; color: var(--sub-text); border-top: 1px solid var(--border); font-size: 0.85rem; margin-top: 3rem; }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="/" class="logo">CommerceLab</a>
+</header>
+
+<main class="container">
+    <div class="pay-card">
+        <div class="pay-header">
+            <h2 class="pay-title">주문 및 결제 확인</h2>
+        </div>
+
+        <!-- 주문 정보 요약 -->
+        <div class="section-title">주문 정보</div>
+        <div class="summary-box">
+            <div class="summary-row">
+                <span>주문 회원</span>
+                <strong th:text="${loginMember.name}">홍길동</strong>
+            </div>
+            <div class="summary-row">
+                <span>주문 상품</span>
+                <strong th:text="${item.name} + ' (' + ${count} + '개)'">고급 게이밍 키보드 (1개)</strong>
+            </div>
+            <div class="summary-row total-price">
+                <span>최종 결제 금액</span>
+                <span th:text="${#numbers.formatInteger(totalPrice, 0, 'COMMA')} + '원'">100,000원</span>
+            </div>
+        </div>
+
+        <!-- 최종 주문/결제 승인 폼 -->
+        <form th:action="@{/order}" method="post">
+            <!-- 서버로 실제 전송할 데이터 -->
+₩            <input type="hidden" name="itemId" th:value="${item.id}">
+            <input type="hidden" name="count" th:value="${count}">
+
+            <!-- 결제 수단 선택 -->
+            <div class="section-title">결제 수단 선택</div>
+            <div class="pay-methods">
+                <div class="pay-method-item">
+                    <input type="radio" id="card" name="payType" value="CARD" checked>
+                    <label for="card" class="pay-method-label">💳 신용/체크카드</label>
+                </div>
+                <div class="pay-method-item">
+                    <input type="radio" id="kakaopay" name="payType" value="KAKAOPAY">
+                    <label for="kakaopay" class="pay-method-label">💛 카카오페이</label>
+                </div>
+                <div class="pay-method-item">
+                    <input type="radio" id="toss" name="payType" value="TOSS">
+                    <label for="toss" class="pay-method-label">💙 토스페이</label>
+                </div>
+                <div class="pay-method-item">
+                    <input type="radio" id="bank" name="payType" value="BANK">
+                    <label for="bank" class="pay-method-label">🏦 무통장입금</label>
+                </div>
+            </div>
+
+            <!-- 버튼 영역 -->
+            <div class="btn-group">
+                <a href="/order" class="btn btn-cancel">이전으로</a>
+                <button type="submit" class="btn btn-pay" th:text="${#numbers.formatInteger(totalPrice, 0, 'COMMA')} + '원 결제하기'">100,000원 결제하기</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer>
+    <p>CommerceLab Portfolio Demo Page | Backend Powered by Spring Boot & MySQL</p>
+</footer>
+
+</body>
+</html>
