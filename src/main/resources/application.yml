@@ -1,6 +1,5 @@
 spring:
   datasource:
-    # Render 환경변수가 있으면 해당 값 사용, 없으면 로컬 H2 DB 사용
     url: ${SPRING_DATASOURCE_URL:jdbc:h2:~/my-awesome-project;AUTO_SERVER=TRUE}
     username: ${SPRING_DATASOURCE_USERNAME:sa}
     password: ${SPRING_DATASOURCE_PASSWORD:}
@@ -12,10 +11,12 @@ spring:
       path: /h2-console
 
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         show_sql: true
         format_sql: true
 
