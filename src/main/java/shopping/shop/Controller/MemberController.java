@@ -62,14 +62,19 @@ public class MemberController {
     }
 
     @PostMapping("/sign-up")
-    public String joinMember(MemberForm memberForm){
+    public String joinMember(MemberForm memberForm, Model model){
         Member member = new Member();
         member.setEmail(memberForm.getEmail());
         member.setPassword(memberForm.getPassword());
         member.setName(memberForm.getName());
         member.setAddress(new Address(memberForm.getCity(), memberForm.getStreet(), memberForm.getZipcode()));
-        memberService.join(member);
 
+        try {
+            memberService.join(member);
+        }catch(IllegalArgumentException e){ // |IllegalStateException
+            model.addAttribute("errorMessage", e.getMessage());
+            return "members/sign-up";
+        }
         return "redirect:/";
     }
 
