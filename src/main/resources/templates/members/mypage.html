@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마이페이지 - CommerceLab</title>
+    <title>CommerceLab - 마이페이지</title>
     <style>
         :root {
             --bg: #f8f9fa;
@@ -12,22 +12,21 @@
             --sub-text: #6c757d;
             --border: #e9ecef;
             --accent: #2563eb;
-            --danger: #dc2626;
             --success: #16a34a;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); line-height: 1.5; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
 
         /* Header */
         header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 1.25rem; font-weight: bold; color: var(--accent); text-decoration: none; }
         nav a { margin-left: 1rem; text-decoration: none; color: var(--text); font-size: 0.9rem; font-weight: 500; }
 
-        /* Container & Grid Layout */
-        .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
-        .mypage-grid { display: grid; grid-template-columns: 260px 1fr; gap: 1.5rem; }
+        /* Layout Container & Grid */
+        .container { max-width: 1000px; width: 100%; margin: 2rem auto; padding: 0 1rem; }
+        .mypage-grid { display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; }
 
-        /* Sidebar Profile Card */
+        /* Profile Card */
         .profile-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; text-align: center; height: fit-content; }
         .profile-avatar { font-size: 2.8rem; margin-bottom: 0.5rem; }
         .profile-name { font-size: 1.15rem; font-weight: bold; }
@@ -67,8 +66,11 @@
         <a href="/createItemForm">상품등록/주문</a>
         <a href="/items">상품목록</a>
         <a href="/orders">주문조회</a>
-        <a href="/mypage" style="font-weight: bold; color: var(--accent);">마이페이지</a>
-        <a href="/login">로그인</a>
+
+        <!-- 동적 세션 메인 메뉴 -->
+        <a th:if="${session.loginMember != null}" href="/mypage" style="font-weight: bold; color: var(--accent);">마이페이지</a>
+        <a th:if="${session.loginMember != null}" href="/logout">로그아웃</a>
+        <a th:if="${session.loginMember == null}" href="/login">로그인</a>
     </nav>
 </header>
 
@@ -141,9 +143,12 @@
     </div>
 </main>
 
-<!-- Footer -->
+<!-- Standardized Footer -->
 <footer>
-    <p>CommerceLab Portfolio Demo Page | Backend Powered by Spring Boot & MySQL</p>
+    <p>© 2026 <strong>CommerceLab</strong>. All rights reserved.</p>
+    <p style="font-size: 0.8rem; color: var(--sub-text); margin-top: 0.25rem;">
+        Powered by Spring Boot, Spring Data JPA, Thymeleaf & MySQL
+    </p>
 </footer>
 
 </body>

@@ -54,8 +54,8 @@ public class MyPageDto {
 
         // 배송 정보
         private String deliveryStatus;   // READY, SHIPPED, DELIVERED
-        // private String courierCompany;   // 택배사명 (미구현으로 주석 처리)
-        // private String trackingNumber;   // 운송장 번호 (미구현으로 주석 처리)
+        private String courierCompany;   // 택배사명 (예: 야마토, CJ대한통운)
+        private String trackingNumber;   // 운송장 번호
         private LocalDateTime orderDate;
 
         public OrderSummaryDto(Order order) {
@@ -75,9 +75,8 @@ public class MyPageDto {
                 if (order.getDelivery().getDeliveryStatus() != null) {
                     this.deliveryStatus = order.getDelivery().getDeliveryStatus().name();
                 }
-                // 미구현 필드 주석 처리
-                // this.courierCompany = order.getDelivery().getCourierCompany();
-                // this.trackingNumber = order.getDelivery().getTrackingNumber();
+              //  this.courierCompany = order.getDelivery().getCourierCompany(); 미구현로직
+              //  this.trackingNumber = order.getDelivery().getTrackingNumber();
             }
 
             this.orderDate = order.getOrderDate();

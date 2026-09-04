@@ -1,9 +1,20 @@
+# 1. 공통 기본 설정 (내 컴퓨터에서는 기본적으로 local 프로필 활성화)
 spring:
+  profiles:
+    active: local
+
+---
+# 2. 내 컴퓨터(로컬) 전용 설정 -> H2 데이터베이스 사용
+spring:
+  config:
+    activate:
+      on-profile: local
+
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:h2:~/my-awesome-project;AUTO_SERVER=TRUE}
-    username: ${SPRING_DATASOURCE_USERNAME:sa}
-    password: ${SPRING_DATASOURCE_PASSWORD:}
-    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.h2.Driver}
+    url: jdbc:h2:~/my-awesome-project;AUTO_SERVER=TRUE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
 
   h2:
     console:
@@ -13,18 +24,36 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: update  # 👈 create에서 update로 변경 (테이블 유지 및 변경사항만 반영)
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
         show_sql: true
         format_sql: true
 
-logging:
-  level:
-    org.hibernate.SQL: debug
-    org.hibernate.type: trace
+---
+# 3. Render(운영/도메인) 전용 설정 -> Render PostgreSQL 클라우드 DB 사용
+spring:
+  config:
+    activate:
+      on-profile: prod
 
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+---
+# 카카오페이 등 공통 API 설정
 kakao:
   pay:
     admin-key: ${KAKAO_ADMIN_KEY:08ca6cf208732644b8bf804b540db9dd}

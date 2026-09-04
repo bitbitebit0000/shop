@@ -1,9 +1,6 @@
 package shopping.shop.service;
 
-import shopping.shop.domain.Delivery;
-import shopping.shop.domain.Member;
-import shopping.shop.domain.Order;
-import shopping.shop.domain.OrderItem;
+import shopping.shop.domain.*;
 import shopping.shop.domain.item.Item;
 import shopping.shop.repository.ItemRepository;
 import shopping.shop.repository.MemberRepository;
@@ -84,5 +81,11 @@ public class OrderService {
      */
     public List<Order> findOrdersByMember(Long memberId) {
         return orderRepository.findAll(memberId);
+    }
+
+    @Transactional
+    public void completePayment(Long orderId) {
+        Order order = orderRepository.findOrder(orderId);
+        order.setOrderStatus(OrderStatus.PAID);
     }
 }

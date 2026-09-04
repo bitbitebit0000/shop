@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import shopping.shop.domain.ItemForm;
 import shopping.shop.domain.Member;
 import shopping.shop.domain.Order;
+import shopping.shop.domain.OrderStatus;
 import shopping.shop.domain.item.Item;
 import shopping.shop.service.ItemService;
 import shopping.shop.service.MemberService;
@@ -90,7 +91,7 @@ public class OrderController {
         Member loginMember = (Member) session.getAttribute("loginMember");
 
         Long orderId = orderService.order(loginMember.getId(), itemId, count);
-
+        orderService.completePayment(orderId);
         return "redirect:/order/complete/" + orderId + "?payType=" + payType;
     }
 
@@ -118,7 +119,6 @@ public class OrderController {
             redirectAttributes.addFlashAttribute("errorMessage", "본인의 주문정보가 아닙니다.");
             return "redirect:/";
         }
-
         model.addAttribute("order", order);
         model.addAttribute("payType", payType);
 
