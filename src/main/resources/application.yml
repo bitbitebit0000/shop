@@ -11,12 +11,12 @@ spring:
       path: /h2-console
 
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: update  # 👈 create에서 update로 변경 (테이블 유지 및 변경사항만 반영)
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.H2Dialect
         show_sql: true
         format_sql: true
 
@@ -25,7 +25,6 @@ logging:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
 
-# 카카오페이 API 설정
 kakao:
   pay:
     admin-key: ${KAKAO_ADMIN_KEY:08ca6cf208732644b8bf804b540db9dd}
