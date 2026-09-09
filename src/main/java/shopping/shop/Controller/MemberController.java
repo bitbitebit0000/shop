@@ -22,11 +22,6 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/")
-    public String home() {
-        return "home";
-    }
-
 
     @GetMapping("/login")
     public String loginForm(Model model) {

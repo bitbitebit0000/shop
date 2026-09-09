@@ -18,6 +18,8 @@ public class Member {
     @Column(unique = true, nullable = false) // 중복 불가 설정
     private String email;
     private String password;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Embedded
     private Address address;

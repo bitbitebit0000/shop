@@ -4,6 +4,7 @@ import shopping.shop.domain.item.Item;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import shopping.shop.domain.item.ItemOption;
 
 @Entity
 @Getter @Setter
@@ -18,25 +19,26 @@ public class OrderItem {
     private Order order;
 
     @ManyToOne
-    @JoinColumn(name = "item_id")
-    private Item item;
+    @JoinColumn
+    private ItemOption itemOption;
 
     private int orderPrice;
     private int count;
 
     public void cancel() {
-        getItem().addStock(count);
+       getItemOption().addStock(count);
     }
 
     public int getTotalPrice() {
         return getOrderPrice() * getCount();
     }
 
-    public static OrderItem createOrderItem(Item item, int orderPrice, int count) {
+    public static OrderItem createOrderItem(ItemOption itemOption, int orderPrice, int count) {
         OrderItem orderItem = new OrderItem();
-        orderItem.setItem(item);
+        orderItem.setItemOption(itemOption);
         orderItem.setOrderPrice(orderPrice);
         orderItem.setCount(count);
+        itemOption.removeStock(count);
 
         return orderItem;
     }

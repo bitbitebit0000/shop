@@ -70,8 +70,6 @@ public class Order {
         this.tid = tid;
     }
 
-
-
     public void cancel() {
         if(getDeliveryStatus() == DeliveryStatus.COMP) {
             throw new IllegalStateException("이미 배송된 건");

@@ -1,39 +1,49 @@
 package shopping.shop.domain.item;
 
+import lombok.*;
 import shopping.shop.domain.OrderItem;
 import shopping.shop.exception.NotEnoughStockException;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "dtype")
 public abstract class Item {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue //identity 전략을 써야하나
     @Column(name = "item_id")
     private Long id;
+    @Column(nullable = false)
     private String name;
     private int price;
-    private int stockQuantity;
+    //private int stockQuantity;
+    private String imageUrl;
 
-    @OneToMany(mappedBy = "item")
-    private List<OrderItem> orderItems = new ArrayList<>();
+    @OneToMany(mappedBy = "item",cascade = CascadeType.ALL)
+    private List<ItemOption> options = new ArrayList<>();
 
-    public void addStock(int quantity) {
-        stockQuantity += quantity;
+    public void addOption(ItemOption option) {
+        options.add(option);
+        option.setItem(this);
     }
 
-    public void remove(int quantity) {
-        int restStock = stockQuantity - quantity;
-        if(restStock < 0) {
-            throw new NotEnoughStockException("need more stock");
-        }
-        stockQuantity = restStock;
+    public int getTotalStockQuantity() {
+        int total = 0;
+       for(ItemOption itemOption : options) {
+           total += itemOption.getStockQuantity();
+       }
+       return total;
     }
+
+    public Item(String name, int price, String imageUrl) {
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
+    }
+
 }

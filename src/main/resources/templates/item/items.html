@@ -1,118 +1,71 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Commerce Lab - Item List</title>
+    <title>상품 및 재고 목록</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
-        :root {
-            --bg: #f8f9fa;
-            --card-bg: #ffffff;
-            --text: #212529;
-            --sub-text: #6c757d;
-            --border: #e9ecef;
-            --accent: #2563eb;
-            --danger: #dc2626;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); line-height: 1.5; }
-
-        /* Header */
-        header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.25rem; font-weight: bold; color: var(--accent); text-decoration: none; }
-        nav a { margin-left: 1rem; text-decoration: none; color: var(--text); font-size: 0.9rem; font-weight: 500; }
-        .admin-badge { background: #1e293b; color: #fff; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; margin-left: 0.5rem; }
-
-        /* Layout Container */
-        .container { max-width: 1000px; margin: 2.5rem auto; padding: 0 1rem; }
-
-        /* Card Panel */
-        .list-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--accent); }
-        .list-title { font-size: 1.25rem; font-weight: bold; color: var(--text); }
-
-        /* Button */
-        .btn-create { background: var(--accent); color: #fff; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: bold; transition: background 0.2s; }
-        .btn-create:hover { background: #1d4ed8; }
-
-        /* Table */
-        .table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem; }
-        th { background: #f1f5f9; color: var(--text); padding: 0.75rem 1rem; font-weight: 600; border-bottom: 2px solid var(--border); white-space: nowrap; }
-        td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
-        tr:hover { background-color: #f8fafc; }
-
-        /* Badges */
-        .badge-stock { background: #dcfce7; color: #15803d; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; }
-        .badge-danger { background: #fee2e2; color: var(--danger); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; }
-
-        /* Footer */
-        footer { text-align: center; padding: 2rem; color: var(--sub-text); border-top: 1px solid var(--border); font-size: 0.85rem; margin-top: 3rem; }
+        .stock-badge { font-size: 0.85em; }
     </style>
 </head>
-<body>
+<body class="container py-4">
 
-<!-- Header -->
-<header>
-    <div>
-        <a href="/" class="logo">CommerceLab</a>
-        <span class="admin-badge">ADMIN</span>
+<h2 class="mb-4">📦 상품 및 옵션 재고 목록</h2>
+
+<!-- 검색 폼 -->
+<form th:action="@{/items}" method="get" class="row g-3 mb-4">
+    <div class="col-auto">
+        <input type="text" name="searchQuery" th:value="${searchQuery}"
+               class="form-control" placeholder="상품명 검색...">
     </div>
-    <nav>
-        <a href="/">메인으로</a>
-        <a href="/items/new">신규상품등록</a>
-        <a href="/orders">주문관리</a>
-    </nav>
-</header>
-
-<!-- Main Container -->
-<main class="container">
-    <div class="list-card">
-        <div class="list-header">
-            <h2 class="list-title">등록 상품 목록</h2>
-            <a href="/items/new" class="btn-create">+ 신규 상품 등록</a>
-        </div>
-
-        <div class="table-responsive">
-            <table>
-                <thead>
-                <tr>
-                    <th style="width: 10%;">ID</th>
-                    <th style="width: 45%;">상품명</th>
-                    <th style="width: 25%;">판매 가격</th>
-                    <th style="width: 20%;">재고 수량</th>
-                </tr>
-                </thead>
-                <tbody>
-                <!-- Thymeleaf 반복문 (백엔드에서 넘겨준 items 리스트 순회) -->
-                <tr th:each="item : ${items}">
-                    <td th:text="${item.id}">1</td>
-                    <td th:text="${item.name}" style="font-weight: 600;">[한정특가] 고급 게이밍 키보드</td>
-                    <!-- #numbers.formatInteger로 3자리마다 쉼표 처리 -->
-                    <td th:text="${#numbers.formatInteger(item.price, 0, 'COMMA') + '원'}">89,000원</td>
-                    <td>
-                        <!-- 재고 수량 조건별 표시 (10개 이하 위험 표시) -->
-                        <span th:if="${item.stockQuantity > 10}" class="badge-stock" th:text="${item.stockQuantity + '개'}">12개</span>
-                        <span th:if="${item.stockQuantity <= 10}" class="badge-danger" th:text="${item.stockQuantity + '개 (품절임박)'}">3개</span>
-                    </td>
-                </tr>
-
-                <!-- 데이터가 없을 경우 예시 (테스트용) -->
-                <tr th:if="${#lists.isEmpty(items)}">
-                    <td colspan="4" style="text-align: center; color: var(--sub-text); padding: 2rem;">
-                        등록된 상품이 없습니다. 신규 상품을 등록해 주세요.
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary mb-3">검색</button>
     </div>
-</main>
+</form>
 
-<!-- Footer -->
-<footer>
-    <p>CommerceLab Portfolio Demo Page | Backend Powered by Spring Boot & MySQL</p>
-</footer>
+<!-- 상품 테이블 -->
+<table class="table table-striped table-hover align-middle">
+    <thead class="table-dark">
+    <tr>
+        <th style="width: 10%;">ID</th>
+        <th style="width: 30%;">상품명</th>
+        <th style="width: 20%;">가격</th>
+        <th style="width: 40%;">옵션별 남은 재고</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- 검색 결과가 없을 때 -->
+    <tr th:if="${#lists.isEmpty(items)}">
+        <td colspan="4" class="text-center text-muted py-4">
+            등록되거나 검색된 상품이 없습니다.
+        </td>
+    </tr>
+
+    <!-- 상품 목록 출력 -->
+    <tr th:each="item : ${items}">
+        <td th:text="${item?.id}">1</td>
+        <td class="fw-bold" th:text="${item?.name}">샘플 상품명</td>
+        <td th:text="${#numbers.formatInteger(item?.price, 0, 'COMMA') + '원'}">10,000원</td>
+        <td>
+            <!-- 옵션 목록 루프 -->
+            <div th:if="${item?.options != null and !#lists.isEmpty(item.options)}" class="d-flex flex-wrap gap-1">
+                        <span th:each="option : ${item.options}"
+                              class="badge rounded-pill p-2 stock-badge"
+                              th:classappend="${option.stockQuantity > 0} ? 'bg-secondary' : 'bg-danger'">
+
+                            <span th:text="${option.optionName}">M</span>:
+                            <span th:if="${option.stockQuantity > 0}" th:text="${option.stockQuantity + '개'}">10개</span>
+                            <span th:if="${option.stockQuantity <= 0}">품절</span>
+                        </span>
+            </div>
+
+            <span th:if="${item?.options == null or #lists.isEmpty(item.options)}" class="text-muted small">
+                        등록된 옵션 없음
+                    </span>
+        </td>
+    </tr>
+    </tbody>
+</table>
 
 </body>
 </html>

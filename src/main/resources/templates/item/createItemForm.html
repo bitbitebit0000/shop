@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Commerce Lab - 상품 주문 작성</title>
+    <title>Commerce Lab - 상품 등록 </title>
     <style>
         :root {
             --bg: #f8f9fa;
@@ -58,13 +58,13 @@
 <!-- Main Form Content -->
 <main class="container">
     <div class="form-card">
-        <div class="form-title">상품 주문 작성</div>
+        <div class="form-title">상품 등록</div>
 
         <form th:action="@{/order}" th:object="${itemForm}" method="post">
 
             <!-- 상품 선택 드롭다운 (th:field가 itemId 값과 바인딩하여 자동으로 selected를 지정함) -->
             <div class="form-group">
-                <label for="itemId">주문할 상품 선택</label>
+                <label for="itemId">등록할 상품 선택</label>
                 <select id="itemId" th:field="*{itemId}" class="form-control" required>
                     <option value="">-- 상품을 선택하세요 --</option>
                     <option value="1">[한정특가] 고급 게이밍 키보드 (89,000원)</option>
@@ -76,13 +76,13 @@
 
             <!-- 향후 할인 적용 등으로 주문 가격 변경가능 -->
             <div class="form-group">
-                <label for="itemPrice">주문 가격</label>
+                <label for="itemPrice">상품 가격</label>
                 <input type="number" id="itemPrice" th:field="*{price}" class="form-control" placeholder="가격을 입력하세요 (예: 10000)" min="10000" required>
             </div>
 
             <!-- 주문 수량 입력 -->
             <div class="form-group">
-                <label for="count">주문 수량</label>
+                <label for="count">상품 수량</label>
                 <input type="number" id="count" th:field="*{count}" class="form-control" placeholder="수량을 입력하세요 (예: 1)" min="1" required>
             </div>
 

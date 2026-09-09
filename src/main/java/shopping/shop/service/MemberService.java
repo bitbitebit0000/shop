@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shopping.shop.domain.Member;
+import shopping.shop.domain.Role;
 import shopping.shop.repository.MemberRepository;
 
 import java.util.List;
@@ -18,6 +19,9 @@ public class MemberService {
     @Transactional
     public Long join(Member member) {
         validateDuplicateMember(member);
+        if(member.getRole() == null) {
+            member.setRole(Role.USER);
+        }
         memberRepository.save(member);
         return member.getId();
     }

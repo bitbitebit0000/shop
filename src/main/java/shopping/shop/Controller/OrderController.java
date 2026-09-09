@@ -3,7 +3,6 @@ package shopping.shop.Controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Request;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,13 +13,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import shopping.shop.domain.ItemForm;
 import shopping.shop.domain.Member;
 import shopping.shop.domain.Order;
-import shopping.shop.domain.OrderStatus;
 import shopping.shop.domain.item.Item;
+import shopping.shop.exception.NotEnoughStockException;
 import shopping.shop.service.ItemService;
 import shopping.shop.service.MemberService;
 import shopping.shop.service.OrderService;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -46,25 +43,40 @@ public class OrderController {
     }
 
     @GetMapping("/order")
-    public String createForm(HttpServletRequest request, Model model) {
+    public String createForm(@RequestParam(value = "itemId", required = false) Long itemId,
+                             HttpServletRequest request,
+                             Model model) {
+        // 1. 로그인 검증
         HttpSession session = request.getSession();
         Member loginMember = (Member) session.getAttribute("loginMember");
-        if (loginMember == null) { //이 검증로직은 리팩토링해야함
+        if (loginMember == null) {
             session.setAttribute("redirectURL", request.getRequestURI());
             return "redirect:/login";
         }
 
+        // 2. 전체 상품 목록 조회
         List<Item> items = itemService.findItems();
         model.addAttribute("loginMember", loginMember);
         model.addAttribute("items", items);
 
+        // 3. 상품이 선택된 경우 해당 상품의 옵션 목록만 모델에 담음
+        if (itemId != null) {
+            Item selectedItem = itemService.findItem(itemId);
+            model.addAttribute("selectedItemId", itemId);
+            model.addAttribute("options", selectedItem.getOptions());
+        }
+
         return "order/orderForm";
     }
 
+
+
     @PostMapping("/order/checkout")
-    public String order(@RequestParam("itemId") Long itemId,
-                        @RequestParam("count") int count, HttpServletRequest request,
-                        Model model) {
+    public String orderCheckout(@RequestParam("itemId") Long itemId,
+                                @RequestParam("itemOptionId") Long itemOptionId,
+                                @RequestParam("count") int count,
+                                HttpServletRequest request,
+                                Model model) {
         HttpSession session = request.getSession();
         Member loginMember = (Member) session.getAttribute("loginMember");
         if (loginMember == null) {
@@ -76,6 +88,7 @@ public class OrderController {
 
         model.addAttribute("loginMember", loginMember);
         model.addAttribute("item", item);
+        model.addAttribute("itemOptionId", itemOptionId); // payForm의 hidden 태그용
         model.addAttribute("count", count);
         model.addAttribute("totalPrice", totalPrice);
 
@@ -84,15 +97,23 @@ public class OrderController {
 
     @PostMapping("/order")
     public String order(@RequestParam("itemId") Long itemId,
+                        @RequestParam("itemOptionId") Long itemOptionId,
                         @RequestParam("count") int count,
                         @RequestParam(value = "payType", defaultValue = "CARD") String payType,
-                        HttpServletRequest request) {
+                        HttpServletRequest request,
+                        RedirectAttributes redirectAttributes) {
         HttpSession session = request.getSession();
         Member loginMember = (Member) session.getAttribute("loginMember");
 
-        Long orderId = orderService.order(loginMember.getId(), itemId, count);
-        orderService.completePayment(orderId);
-        return "redirect:/order/complete/" + orderId + "?payType=" + payType;
+        try {
+            Long orderId = orderService.order(loginMember.getId(), itemOptionId, count);
+            orderService.completePayment(orderId); //여기서 주문은 끝난건데 결제를 했다고 확정을 하면 안되지않나
+            return "redirect:/order/complete/" + orderId + "?payType=" + payType;
+
+        } catch(NotEnoughStockException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "재고가 부족합니다.");
+            return "redirect:/order?itemId=" + itemId; //에러메시지 html에 등록
+        }
     }
 
     @GetMapping("/order/complete/{orderId}")
@@ -119,9 +140,9 @@ public class OrderController {
             redirectAttributes.addFlashAttribute("errorMessage", "본인의 주문정보가 아닙니다.");
             return "redirect:/";
         }
+
         model.addAttribute("order", order);
         model.addAttribute("payType", payType);
-
         return "order/orderComplete";
     }
 

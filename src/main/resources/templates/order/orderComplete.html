@@ -58,10 +58,13 @@
                 <span class="info-label">주문 번호</span>
                 <span class="info-value" th:text="${order.id}">1024</span>
             </div>
-            <!-- 2. 주문 상품 이름 및 수량 -->
+            <!-- 2. 주문 상품 이름, 옵션명 및 수량 -->
             <div class="info-row">
                 <span class="info-label">주문 상품</span>
-                <span class="info-value" th:text="${order.orderItems[0].item.name} + ' (' + ${order.orderItems[0].count} + '개)'">상품명</span>
+                <span class="info-value"
+                      th:text="${order.orderItems[0].itemOption.item.name} + ' [' + ${order.orderItems[0].itemOption.optionName} + '] (' + ${order.orderItems[0].count} + '개)'">
+                    상품명 [옵션명] (1개)
+                </span>
             </div>
             <!-- 3. 결제 수단 (CARD, KAKAOPAY 등) -->
             <div class="info-row">
@@ -86,7 +89,6 @@
     if (errorMessage) {
         alert(errorMessage);
     }
-
 </script>
 </body>
 </html>

@@ -7,17 +7,18 @@
     <!-- 구글 서치 콘솔 소유권 확인 메타태그 -->
     <meta name="google-site-verification" content="TcnEuMjWxL3jUKHUot8-xPjwkZC65RmyDX24yPFeDUU" />
 
-    <!-- 👇 네이버 서치어드바이저 소유확인 메타태그 -->
+    <!-- 네이버 서치어드바이저 소유확인 메타태그 -->
     <meta name="naver-site-verification" content="3097033f75eb0da343d57438ad310bfd9da0a6f6" />
 
     <!-- 검색 엔진 노출용 설명글 및 Open Graph 설정 -->
-    <meta name="description" content="Commerce Lab - 타임딜과 한정 특가 상품을 만나볼 수 있는 온라인 쇼핑몰입니다.">
+    <meta name="description" content="DropFit - 한정 수량 스트릿 패션 & 드롭 아이템을 가장 빠르게 만나는 선착순 타임딜 커머스">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Commerce Lab - Live Hot Deal">
-    <meta property="og:description" content="타임딜과 한정 특가 상품을 만나볼 수 있는 온라인 쇼핑몰입니다.">
+    <meta property="og:title" content="DropFit - Limited Fashion Drop">
+    <meta property="og:description" content="매주 정해진 시간, 한정판 후드티와 스니커즈를 특가로 만나는 타임드롭 패션 플랫폼">
     <meta property="og:url" content="https://shop-m7va.onrender.com">
 
-    <title>Commerce Lab - Live Hot Deal</title>
+    <title>DropFit - Limited Fashion Drop</title>
+
     <style>
         :root {
             --bg: #f8f9fa;
@@ -25,7 +26,7 @@
             --text: #212529;
             --sub-text: #6c757d;
             --border: #e9ecef;
-            --accent: #2563eb;
+            --accent: #111827;
             --danger: #dc2626;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -33,8 +34,9 @@
 
         /* Header */
         header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.25rem; font-weight: bold; color: var(--accent); text-decoration: none; }
+        .logo { font-size: 1.4rem; font-weight: 900; color: var(--accent); text-decoration: none; letter-spacing: -0.5px; }
         nav a { margin-left: 1rem; text-decoration: none; color: var(--text); font-size: 0.9rem; font-weight: 500; }
+        .nav-admin-link { color: #0284c7; font-weight: bold; background: #e0f2fe; padding: 0.3rem 0.6rem; border-radius: 4px; }
 
         /* Layout Container */
         .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
@@ -75,9 +77,55 @@
         .btn-admin:hover { background: #1d4ed8; }
 
         /* Banner / Time Deal Section */
-        .time-deal-banner { background: #1e293b; color: #fff; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .deal-badge { background: var(--danger); color: #fff; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
-        .deal-timer { font-family: monospace; font-size: 1.2rem; color: #fba100; font-weight: bold; }
+        .time-deal-banner {
+            background: #0f172a;
+            color: #fff;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        .deal-badge { background: var(--danger); color: #fff; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+
+        /* 중앙 실시간 소진율 프로그레스 박스 */
+        .deal-progress-box {
+            flex: 1;
+            max-width: 320px;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-bottom: 0.4rem;
+            color: #cbd5e1;
+        }
+        .progress-percent {
+            color: #f87171;
+            font-weight: bold;
+        }
+        .progress-bar-bg {
+            width: 100%;
+            height: 8px;
+            background: #334155;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f59e0b, #ef4444);
+            border-radius: 4px;
+        }
+
+        .deal-timer-box { text-align: right; }
+        .deal-timer { font-family: monospace; font-size: 1.3rem; color: #fba100; font-weight: bold; }
 
         /* Section Title */
         .section-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem; border-left: 4px solid var(--accent); padding-left: 0.5rem; }
@@ -85,30 +133,53 @@
         /* Product Grid */
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 3rem; }
         .product-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
-        .product-img { background: #e2e8f0; height: 160px; display: flex; align-items: center; justify-content: center; color: var(--sub-text); font-size: 0.85rem; }
+
+        .product-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+            background-color: #e2e8f0;
+        }
+
         .product-info { padding: 1rem; flex-grow: 1; }
         .product-title { font-size: 0.95rem; font-weight: bold; margin-bottom: 0.4rem; }
         .product-price { font-size: 1.1rem; font-weight: bold; color: var(--text); }
-        .stock-count { font-size: 0.8rem; color: var(--danger); margin-top: 0.2rem; }
 
         /* Button */
         .btn-order { display: block; width: 100%; padding: 0.6rem; background: var(--accent); color: #fff; border: none; font-weight: bold; cursor: pointer; text-align: center; border-radius: 0 0 6px 6px; text-decoration: none; }
-        .btn-order:hover { background: #1d4ed8; }
+        .btn-order:hover { background: #1f2937; }
+
+        /* 품절(SOLD OUT) 버튼 스타일 */
+        .btn-disabled { background: #9ca3af; cursor: not-allowed; }
+        .btn-disabled:hover { background: #9ca3af; }
 
         /* Footer */
         footer { text-align: center; padding: 2rem; color: var(--sub-text); border-top: 1px solid var(--border); font-size: 0.85rem; }
+
+        @media (max-width: 768px) {
+            .time-deal-banner { flex-direction: column; align-items: stretch; gap: 1rem; }
+            .deal-progress-box { max-width: 100%; }
+            .deal-timer-box { text-align: left; }
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <a href="/" class="logo">CommerceLab</a>
+    <a href="/" class="logo">DropFit</a>
     <nav>
-        <a href="/createItemForm">상품등록/주문</a>
         <a href="/items">상품목록</a>
-        <a href="/orders">주문조회</a>
 
-        <a th:if="${session.loginMember != null}" href="/mypage" style="font-weight: bold; color: var(--accent);">마이페이지</a>
+        <a th:if="${session.loginMember != null and (#strings.toString(session.loginMember.role) == 'ADMIN' or #strings.toString(session.loginMember.role) == 'ROLE_ADMIN')}"
+           href="/createItemForm">상품등록</a>
+
+        <a th:if="${session.loginMember != null and (#strings.toString(session.loginMember.role) == 'ADMIN' or #strings.toString(session.loginMember.role) == 'ROLE_ADMIN')}"
+           href="/admin" class="nav-admin-link">⚙️ 관리자 센터</a>
+
+        <a th:if="${session.loginMember != null and !#strings.contains(session.loginMember.role, 'ADMIN')}"
+           href="/mypage"
+           style="font-weight: bold; color: var(--accent);">마이페이지</a>
 
         <th:block th:if="${session.loginMember != null}">
             <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;"></form>
@@ -122,71 +193,118 @@
 
 <main class="container">
 
-    <div class="admin-banner">
+    <div class="admin-banner" th:if="${session.loginMember != null and (#strings.toString(session.loginMember.role) == 'ADMIN' or #strings.toString(session.loginMember.role) == 'ROLE_ADMIN')}">
         <div class="admin-banner-info">
             <span class="admin-tag">ADMIN</span>
-            <span class="admin-banner-title">관리자 전용 페이지로 이동하여 신규 상품을 등록하시겠습니까?</span>
+            <span class="admin-banner-title">관리자 전용 페이지로 이동하여 신규 드롭 상품을 등록하시겠습니까?</span>
         </div>
         <a href="/admin" class="btn-admin">관리자 모드 이동 &rarr;</a>
     </div>
 
+    <!-- Time Deal Banner -->
     <div class="time-deal-banner">
         <div>
-            <span class="deal-badge">HOT TIME DEAL</span>
-            <h2 style="font-size: 1.1rem; margin-top: 0.4rem;">오늘의 한정 수량 선착순 타임딜</h2>
+            <span class="deal-badge">LIMITED DROP</span>
+            <h2 style="font-size: 1.1rem; margin-top: 0.4rem;">오늘의 한정 수량 선착순 타임드롭</h2>
         </div>
-        <div class="deal-timer">남은 시간 00:14:52</div>
+
+        <div class="deal-progress-box">
+            <div class="progress-label">
+                <span>🔥 실시간 소진율</span>
+                <span class="progress-percent">88% (선착순 진행중)</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" style="width: 88%;"></div>
+            </div>
+        </div>
+
+        <div class="deal-timer-box">
+            <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 2px;">종료까지 남은 시간</div>
+            <div class="deal-timer">00:14:52</div>
+        </div>
     </div>
 
-    <div class="section-title">판매 중인 추천 상품</div>
+    <div class="section-title">DropFit 추천 한정판 아이템</div>
 
     <div class="product-grid">
 
+        <!-- 1. 한정판 후드티 -->
         <div class="product-card">
-            <div class="product-img">ITEM IMAGE</div>
+            <img class="product-img"
+                 src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80"
+                 referrerpolicy="no-referrer"
+                 alt="[LIMITED] 헤비웨이트 오버핏 후드티">
             <div class="product-info">
-                <div class="product-title">[한정특가] 고급 게이밍 키보드</div>
-                <div class="product-price">89,000원</div>
-                <div class="stock-count">남은 재고: 12개</div>
+                <div class="product-title">[LIMITED] 헤비웨이트 오버핏 후드티</div>
+                <div class="product-price">59,000원</div>
             </div>
-            <a href="/order?itemId=1" class="btn-order">바로 구매하기</a>
+
+            <!-- /order?itemId=1 경로 호출 -->
+            <a th:if="${items != null and items.size() > 0 and items[0].totalStockQuantity > 0}"
+               th:href="@{/order(itemId=${items[0].id})}" class="btn-order">바로 구매하기</a>
+            <a th:if="${items != null and items.size() > 0 and items[0].totalStockQuantity <= 0}"
+               href="#" class="btn-order btn-disabled" onclick="alert('품절된 상품입니다.'); return false;">SOLD OUT</a>
         </div>
 
+        <!-- 2. 스니커즈 -->
         <div class="product-card">
-            <div class="product-img">ITEM IMAGE</div>
+            <img class="product-img"
+                 src="https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=800&q=80"
+                 referrerpolicy="no-referrer"
+                 alt="[DROP] 레트로 하이탑 스니커즈">
             <div class="product-info">
-                <div class="product-title">무선 노이즈캔슬링 헤드폰</div>
-                <div class="product-price">198,000원</div>
-                <div class="stock-count" style="color: var(--sub-text);">재고 여유</div>
+                <div class="product-title">[DROP] 레트로 하이탑 스니커즈</div>
+                <div class="product-price">149,000원</div>
             </div>
-            <a href="/order?itemId=2" class="btn-order">바로 구매하기</a>
+
+            <!-- /order?itemId=2 경로 호출 -->
+            <a th:if="${items != null and items.size() > 1 and items[1].totalStockQuantity > 0}"
+               th:href="@{/order(itemId=${items[1].id})}" class="btn-order">바로 구매하기</a>
+            <a th:if="${items != null and items.size() > 1 and items[1].totalStockQuantity <= 0}"
+               href="#" class="btn-order btn-disabled" onclick="alert('품절된 상품입니다.'); return false;">SOLD OUT</a>
         </div>
 
+        <!-- 3. 그래픽 반팔티 -->
         <div class="product-card">
-            <div class="product-img">ITEM IMAGE</div>
+            <img class="product-img"
+                 src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80"
+                 referrerpolicy="no-referrer"
+                 alt="시그니처 로고 피그먼트 티셔츠">
             <div class="product-info">
-                <div class="product-title">초고속 C-Type 충전기 65W</div>
-                <div class="product-price">24,500원</div>
-                <div class="stock-count" style="color: var(--sub-text);">재고 여유</div>
+                <div class="product-title">시그니처 로고 피그먼트 티셔츠</div>
+                <div class="product-price">35,000원</div>
             </div>
-            <a href="/order?itemId=3" class="btn-order">바로 구매하기</a>
+
+            <!-- /order?itemId=3 경로 호출 -->
+            <a th:if="${items != null and items.size() > 2 and items[2].totalStockQuantity > 0}"
+               th:href="@{/order(itemId=${items[2].id})}" class="btn-order">바로 구매하기</a>
+            <a th:if="${items != null and items.size() > 2 and items[2].totalStockQuantity <= 0}"
+               href="#" class="btn-order btn-disabled" onclick="alert('품절된 상품입니다.'); return false;">SOLD OUT</a>
         </div>
 
+        <!-- 4. 캡 모자 -->
         <div class="product-card">
-            <div class="product-img">ITEM IMAGE</div>
+            <img class="product-img"
+                 src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=800&q=80"
+                 referrerpolicy="no-referrer"
+                 alt="워시드 볼캡 - 블랙">
             <div class="product-info">
-                <div class="product-title">스마트 디스플레이 거치대</div>
-                <div class="product-price">15,000원</div>
-                <div class="stock-count" style="color: var(--sub-text);">재고 여유</div>
+                <div class="product-title">워시드 볼캡 - 블랙</div>
+                <div class="product-price">29,000원</div>
             </div>
-            <a href="/createItemForm?itemId=4" class="btn-order">바로 구매하기</a>
+
+            <!-- /order?itemId=4 경로 호출 -->
+            <a th:if="${items != null and items.size() > 3 and items[3].totalStockQuantity > 0}"
+               th:href="@{/order(itemId=${items[3].id})}" class="btn-order">바로 구매하기</a>
+            <a th:if="${items != null and items.size() > 3 and items[3].totalStockQuantity <= 0}"
+               href="#" class="btn-order btn-disabled" onclick="alert('품절된 상품입니다.'); return false;">SOLD OUT</a>
         </div>
 
     </div>
 </main>
 
 <footer>
-    <p>© 2026 <strong>CommerceLab</strong>. All rights reserved.</p>
+    <p>© 2026 <strong>DropFit</strong>. All rights reserved.</p>
     <p style="font-size: 0.8rem; color: var(--sub-text); margin-top: 0.25rem;">
         Powered by Spring Boot, Spring Data JPA, Thymeleaf & MySQL
     </p>

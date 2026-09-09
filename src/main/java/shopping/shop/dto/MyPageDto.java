@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import shopping.shop.domain.Member;
 import shopping.shop.domain.Order;
+import shopping.shop.domain.OrderItem;
 import shopping.shop.domain.OrderStatus;
 
 import java.time.LocalDateTime;
@@ -27,9 +28,6 @@ public class MyPageDto {
     public MyPageDto(Member member, List<Order> orderList) {
         this.memberName = member.getName();
 
-        // Member 엔티티에 email 필드가 없다면 주석 처리 또는 적절한 값 설정
-        // this.email = member.getEmail();
-
         if (member.getAddress() != null) {
             this.city = member.getAddress().getCity();
             this.street = member.getAddress().getStreet();
@@ -50,33 +48,38 @@ public class MyPageDto {
         private String itemName;
         private int count;
         private int totalPrice;
-        private OrderStatus orderStatus; // BEFORE_PAYMENT, PAID 등
+        private OrderStatus orderStatus;
 
         // 배송 정보
-        private String deliveryStatus;   // READY, SHIPPED, DELIVERED
-        private String courierCompany;   // 택배사명 (예: 야마토, CJ대한통운)
-        private String trackingNumber;   // 운송장 번호
+        private String deliveryStatus;
+        private String courierCompany;
+        private String trackingNumber;
         private LocalDateTime orderDate;
 
         public OrderSummaryDto(Order order) {
             this.orderId = order.getId();
 
-            // 첫 번째 주문 상품을 대표 상품명으로 설정
+            // 첫 번째 주문 상품을 대표 상품명으로 설정 (ItemOption을 거쳐 Item 탐색)
             if (order.getOrderItems() != null && !order.getOrderItems().isEmpty()) {
-                this.itemName = order.getOrderItems().get(0).getItem().getName();
-                this.count = order.getOrderItems().get(0).getCount();
+                OrderItem firstOrderItem = order.getOrderItems().get(0);
+
+                if (firstOrderItem.getItemOption() != null && firstOrderItem.getItemOption().getItem() != null) {
+                    String baseItemName = firstOrderItem.getItemOption().getItem().getName();
+                    int extraCount = order.getOrderItems().size() - 1;
+
+                    // 2개 이상 주문 시 "대표상품 외 N건" 처리
+                    this.itemName = (extraCount > 0) ? baseItemName + " 외 " + extraCount + "건" : baseItemName;
+                }
+
+                this.count = firstOrderItem.getCount();
             }
 
-            this.totalPrice = order.getTotalPrice(); // Order 내 총금액 계산 메서드 활용
+            this.totalPrice = order.getTotalPrice();
             this.orderStatus = order.getOrderStatus();
 
             // 배송 정보 처리
-            if (order.getDelivery() != null) {
-                if (order.getDelivery().getDeliveryStatus() != null) {
-                    this.deliveryStatus = order.getDelivery().getDeliveryStatus().name();
-                }
-              //  this.courierCompany = order.getDelivery().getCourierCompany(); 미구현로직
-              //  this.trackingNumber = order.getDelivery().getTrackingNumber();
+            if (order.getDelivery() != null && order.getDelivery().getDeliveryStatus() != null) {
+                this.deliveryStatus = order.getDelivery().getDeliveryStatus().name();
             }
 
             this.orderDate = order.getOrderDate();

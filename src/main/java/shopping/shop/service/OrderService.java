@@ -2,6 +2,8 @@ package shopping.shop.service;
 
 import shopping.shop.domain.*;
 import shopping.shop.domain.item.Item;
+import shopping.shop.domain.item.ItemOption;
+import shopping.shop.repository.ItemOptionRepository;
 import shopping.shop.repository.ItemRepository;
 import shopping.shop.repository.MemberRepository;
 import shopping.shop.repository.OrderRepository;
@@ -19,23 +21,25 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ItemRepository itemRepository;
     private final MemberRepository memberRepository;
+    private final ItemOptionRepository itemOptionRepository;
 
     /**
      * 1. 결제 준비 단계: 주문 생성 (BEFORE_PAYMENT 상태)
      * Controller의 /ready 시점에 호출됩니다.
      */
     @Transactional //Order매서드명 createPendingOrder
-    public Long order(Long memberId, Long itemId, int count) {
+    public Long order(Long memberId, Long ItemOptionId, int count) {
         // 엔티티 조회
         Member member = memberRepository.findMember(memberId);
-        Item item = itemRepository.findById(itemId);
+        ItemOption itemOption = itemOptionRepository.findItemOption(ItemOptionId);
+        Item item = itemOption.getItem();
 
         // 배송정보 생성
         Delivery delivery = new Delivery();
         delivery.setAddress(member.getAddress());
 
-        // 주문상품 생성
-        OrderItem orderItem = OrderItem.createOrderItem(item, item.getPrice(), count);
+        // 주문상품 생성 (여기서는 사이즈가 달라도 가격은 동일)
+        OrderItem orderItem = OrderItem.createOrderItem(itemOption, item.getPrice(), count);
 
         // 주문 생성 (createOrder 내부에서 status = BEFORE_PAYMENT 설정)
         Order order = Order.createOrder(member, delivery, orderItem);

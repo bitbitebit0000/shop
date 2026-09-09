@@ -26,6 +26,23 @@ public class ItemRepository {
                 .getResultList();
     }
 
+    /**
+     * 전체 상품과 각 상품의 옵션(ItemOption) 목록을 한 번에 조회 (Fetch Join)
+     */
+    public List<Item> findItemsWithOption() {
+        return em.createQuery(
+                        "select distinct i from Item i " +
+                                "left join fetch i.options", Item.class)
+                .getResultList();
+    }
+
+    // 2. Item + Option을 fetch join으로 함께 검색할 때
+    public List<Item> findItemsWithOptionBySearch(String searchQuery) {
+        return em.createQuery("select distinct i from Item i left join fetch i.options where i.name like :searchQuery", Item.class)
+                .setParameter("searchQuery", "%" + searchQuery + "%")
+                .getResultList();
+    }
+
 
 
 }

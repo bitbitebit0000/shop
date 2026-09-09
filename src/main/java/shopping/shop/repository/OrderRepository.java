@@ -32,7 +32,7 @@ public class OrderRepository {
                                 " join fetch o.member m" +
                                 " join fetch o.delivery d" +
                                 " join fetch o.orderItems oi" +
-                                " join fetch oi.item i" +
+                                " join fetch oi.itemOption io" + // oi.item -> oi.itemOption 수정
                                 " where m.id = :memberId" +
                                 " order by o.orderDate desc", Order.class)
                 .setParameter("memberId", memberId)
