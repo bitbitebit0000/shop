@@ -28,7 +28,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
+          key: ${{ secrets.EC2_KEY }}
           source: "build/libs/*.jar"
           target: "/home/ubuntu/shop/"
           strip_components: 2
@@ -55,4 +55,4 @@ jobs:
               -DSPRING_DATASOURCE_PASSWORD='${{ secrets.DB_PASSWORD }}' \
               $JAR_NAME > /home/ubuntu/shop/app.log 2>&1 &
             
-            echo "Deployment completed successfully!"
+            echo "Deployment completed"ㄴ
