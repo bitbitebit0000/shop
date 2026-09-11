@@ -17,6 +17,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'gradle'
 
       - name: Build with Gradle
         run: |
@@ -55,4 +56,4 @@ jobs:
               -DSPRING_DATASOURCE_PASSWORD='${{ secrets.DB_PASSWORD }}' \
               $JAR_NAME > /home/ubuntu/shop/app.log 2>&1 &
             
-            echo "Deployment completed"ㄴ
+            echo "Deployment completed"
