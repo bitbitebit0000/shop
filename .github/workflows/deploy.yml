@@ -38,7 +38,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
+          key: ${{ secrets.EC2_KEY }}
           script: |
             JAR_NAME=$(ls /home/ubuntu/shop/*.jar | head -n 1)
             CURRENT_PID=$(pgrep -f "java -jar")
