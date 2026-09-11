@@ -80,88 +80,57 @@
         }
         .btn-admin:hover { background: #1d4ed8; }
 
-        /* 🔥 메인 중앙 검색 배너 영역 */
-        .hero-search-section {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: #ffffff;
-            padding: 2.5rem 2rem;
+        /* Banner / Time Deal Section */
+        .time-deal-banner {
+            background: #0f172a;
+            color: #fff;
+            padding: 1.5rem 2rem;
             border-radius: 12px;
-            margin-bottom: 2.5rem;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
-        .hero-title {
-            font-size: 1.4rem;
-            font-weight: 800;
-            margin-bottom: 0.4rem;
-            letter-spacing: -0.5px;
-        }
-        .hero-subtitle {
-            font-size: 0.9rem;
-            color: #94a3b8;
-            margin-bottom: 1.5rem;
-        }
-        .search-box-form {
-            max-width: 550px;
-            margin: 0 auto;
+            margin-bottom: 2rem;
             display: flex;
-            gap: 0.5rem;
-            background: #ffffff;
-            padding: 0.35rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
         }
-        .search-input {
+        .deal-badge { background: var(--danger); color: #fff; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+
+        /* 중앙 실시간 소진율 프로그레스 박스 */
+        .deal-progress-box {
             flex: 1;
-            border: none;
-            outline: none;
-            padding: 0.7rem 1rem;
-            font-size: 0.95rem;
-            color: var(--text);
-            border-radius: 6px;
+            max-width: 320px;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .btn-search {
-            background: var(--accent);
-            color: #ffffff;
-            border: none;
-            padding: 0.7rem 1.3rem;
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-bottom: 0.4rem;
+            color: #cbd5e1;
+        }
+        .progress-percent {
+            color: #f87171;
             font-weight: bold;
-            font-size: 0.9rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.2s;
         }
-        .btn-search:hover {
+        .progress-bar-bg {
+            width: 100%;
+            height: 8px;
             background: #334155;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f59e0b, #ef4444);
+            border-radius: 4px;
+            transition: width 0.5s ease-in-out;
         }
 
-        /* 인기 추천 태그 */
-        .popular-tags {
-            margin-top: 1.2rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            font-size: 0.82rem;
-        }
-        .tag-label {
-            color: #64748b;
-            font-weight: 600;
-        }
-        .tag-chip {
-            background: rgba(255, 255, 255, 0.1);
-            color: #cbd5e1;
-            padding: 0.25rem 0.65rem;
-            border-radius: 20px;
-            text-decoration: none;
-            transition: all 0.2s;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .tag-chip:hover {
-            background: rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-        }
+        .deal-timer-box { text-align: right; }
+        .deal-timer { font-family: monospace; font-size: 1.3rem; color: #fba100; font-weight: bold; }
 
         /* Section Title */
         .section-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem; border-left: 4px solid var(--accent); padding-left: 0.5rem; }
@@ -194,11 +163,9 @@
         footer { text-align: center; padding: 2rem; color: var(--sub-text); border-top: 1px solid var(--border); font-size: 0.85rem; }
 
         @media (max-width: 768px) {
-            .hero-search-section { padding: 1.75rem 1rem; }
-            .hero-title { font-size: 1.2rem; }
-            .search-box-form { flex-direction: column; background: transparent; box-shadow: none; padding: 0; }
-            .search-input { width: 100%; padding: 0.75rem; }
-            .btn-search { width: 100%; }
+            .time-deal-banner { flex-direction: column; align-items: stretch; gap: 1rem; }
+            .deal-progress-box { max-width: 100%; }
+            .deal-timer-box { text-align: left; }
         }
     </style>
 </head>
@@ -235,24 +202,26 @@
         <a href="/admin" class="btn-admin">관리자 모드 이동 &rarr;</a>
     </div>
 
-    <!-- 🔥 메인 중앙 검색 배너 영역 (searchQuery 파라미터로 전송) -->
-    <div class="hero-search-section">
-        <h1 class="hero-title">원하는 드롭 아이템을 검색해보세요</h1>
-        <p class="hero-subtitle">한정 수량 스트릿 패션 & 인기 브랜드 드롭 컬렉션</p>
+    <!-- Time Deal Banner -->
+    <div class="time-deal-banner">
+        <div>
+            <span class="deal-badge">LIMITED DROP</span>
+            <h2 style="font-size: 1.1rem; margin-top: 0.4rem;">오늘의 한정 수량 선착순 타임드롭</h2>
+        </div>
 
-        <!-- name="searchQuery" 로 수정 완료 -->
-        <form th:action="@{/items}" method="get" class="search-box-form">
-            <input type="text" name="searchQuery" class="search-input" placeholder="상품명 또는 키워드를 입력하세요 (예: 후드티, 스니커즈)" required>
-            <button type="submit" class="btn-search">검색하기</button>
-        </form>
+        <div class="deal-progress-box">
+            <div class="progress-label">
+                <span>🔥 실시간 소진율</span>
+                <span class="progress-percent" id="progressText">88% (선착순 진행중)</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressBar" style="width: 88%;"></div>
+            </div>
+        </div>
 
-        <!-- 태그 링크 파라미터도 searchQuery=로 수정 완료 -->
-        <div class="popular-tags">
-            <span class="tag-label">추천 키워드 :</span>
-            <a th:href="@{/items(searchQuery='후드티')}" class="tag-chip">#후드티</a>
-            <a th:href="@{/items(searchQuery='스니커즈')}" class="tag-chip">#스니커즈</a>
-            <a th:href="@{/items(searchQuery='티셔츠')}" class="tag-chip">#티셔츠</a>
-            <a th:href="@{/items(searchQuery='볼캡')}" class="tag-chip">#볼캡</a>
+        <div class="deal-timer-box">
+            <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 2px;">종료까지 남은 시간</div>
+            <div class="deal-timer" id="dealTimer">00:00:00</div>
         </div>
     </div>
 
@@ -337,6 +306,45 @@
         Powered by Spring Boot, Spring Data JPA, Thymeleaf & MySQL
     </p>
 </footer>
+
+<!-- 타임드롭 타이머 & 소진율 실시간 카운트 스크립트 -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // 1. 카운트다운 타이머 (기본 1시간 45분 세팅)
+        let totalSeconds = (1 * 3600) + (45 * 60) + 30;
+        const timerElement = document.getElementById("dealTimer");
+
+        function updateTimer() {
+            if (totalSeconds <= 0) {
+                timerElement.textContent = "00:00:00 (종료)";
+                return;
+            }
+            const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+            const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+            const seconds = String(totalSeconds % 60).padStart(2, '0');
+
+            timerElement.textContent = `${hours}:${minutes}:${seconds}`;
+            totalSeconds--;
+        }
+
+        updateTimer();
+        setInterval(updateTimer, 1000);
+
+        // 2. 소진율 동적 애니메이션 시뮬레이션
+        let currentPercent = 88;
+        const progressText = document.getElementById("progressText");
+        const progressBar = document.getElementById("progressBar");
+
+        setInterval(function() {
+            // 15초마다 일정 확률로 소진율 1% 증가 (최대 99%까지)
+            if (currentPercent < 99 && Math.random() > 0.4) {
+                currentPercent++;
+                progressText.textContent = `${currentPercent}% (선착순 진행중)`;
+                progressBar.style.width = `${currentPercent}%`;
+            }
+        }, 15000);
+    });
+</script>
 
 </body>
 </html>

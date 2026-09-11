@@ -1,24 +1,90 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>주문하기</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropFit - 상품 주문 작성</title>
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #212529;
+            --sub-text: #6c757d;
+            --border: #e9ecef;
+            --accent: #111827;
+            --danger: #dc2626;
+            --danger-bg: #fef2f2;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
+
+        /* Header */
+        header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.4rem; font-weight: 900; color: var(--accent); text-decoration: none; letter-spacing: -0.5px; }
+        nav { display: flex; align-items: center; }
+        nav a { margin-left: 1rem; text-decoration: none; color: var(--text); font-size: 0.9rem; font-weight: 500; }
+
+        .btn-logout { background: none; border: none; color: var(--text); font-size: 0.9rem; font-weight: 500; cursor: pointer; padding: 0; margin-left: 1rem; }
+        .btn-logout:hover { color: var(--accent); }
+
+        /* Container & Form Card */
+        .container { max-width: 560px; width: 100%; margin: 2.5rem auto; padding: 0 1rem; }
+        .form-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .form-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 1.5rem; border-left: 4px solid var(--accent); padding-left: 0.6rem; }
+
+        /* Alert Banner */
+        .alert-error { background-color: var(--danger-bg); border: 1px solid #fecaca; color: var(--danger); padding: 0.85rem 1rem; border-radius: 6px; font-size: 0.9rem; margin-bottom: 1.25rem; font-weight: 500; }
+
+        /* Form Controls */
+        .form-group { margin-bottom: 1.25rem; }
+        .form-label { display: block; font-weight: 600; margin-bottom: 0.4rem; font-size: 0.85rem; color: var(--text); }
+        .form-control, .form-select { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; outline: none; transition: border-color 0.2s; background-color: #fff; }
+        .form-control:focus, .form-select:focus { border-color: var(--accent); }
+        .form-control[readonly] { background-color: #f3f4f6; color: var(--sub-text); cursor: not-allowed; }
+
+        /* Buttons */
+        .btn-submit { width: 100%; padding: 0.8rem; background: var(--accent); color: #fff; border: none; font-size: 1rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: background 0.2s; margin-top: 0.5rem; }
+        .btn-submit:hover:not(:disabled) { background: #1f2937; }
+        .btn-submit:disabled { background: #9ca3af; cursor: not-allowed; }
+        .btn-cancel { display: block; width: 100%; text-align: center; margin-top: 0.75rem; padding: 0.6rem; color: var(--sub-text); text-decoration: none; font-size: 0.85rem; }
+        .btn-cancel:hover { text-decoration: underline; }
+
+        /* Footer */
+        footer { text-align: center; padding: 2rem; color: var(--sub-text); border-top: 1px solid var(--border); font-size: 0.85rem; margin-top: 3rem; }
+    </style>
 </head>
 <body>
-<div class="container mt-5" style="max-width: 600px;">
-    <h2 class="mb-4 text-center">상품 주문 작성</h2>
 
-    <!-- 백엔드 예외 발생 시 메시지 출력 (추가된 부분) -->
-    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
-        <span th:text="${errorMessage}">재고가 부족합니다.</span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+<!-- Header -->
+<header>
+    <a th:href="@{/}" class="logo">DropFit</a>
+    <nav>
+        <a th:href="@{/items}">상품목록</a>
+        <!-- 동적 세션 메인 메뉴 -->
+        <a th:if="${session.loginMember != null}" th:href="@{/mypage}">마이페이지</a>
 
-    <!-- [1단계] 상품 선택 폼 (GET 방식) -->
-    <form th:action="@{/order}" method="get" class="mb-3">
-        <div class="mb-3">
-            <label for="itemSelect" class="form-label fw-bold">1. 상품 선택</label>
+        <!-- POST 전송 방식 로그아웃 폼 -->
+        <form th:if="${session.loginMember != null}" th:action="@{/logout}" method="post" style="display: inline;">
+            <button type="submit" class="btn-logout">로그아웃</button>
+        </form>
+
+        <a th:if="${session.loginMember == null}" th:href="@{/login}">로그인</a>
+    </nav>
+</header>
+
+<!-- Main Form Content -->
+<main class="container">
+    <div class="form-card">
+        <h1 class="form-title">🛒 상품 주문 작성</h1>
+
+        <!-- 백엔드 예외/재고 부족 발생 시 메시지 출력 -->
+        <div th:if="${errorMessage}" class="alert-error" th:text="${errorMessage}">
+            재고가 부족합니다.
+        </div>
+
+        <!-- [1단계] 상품 선택 폼 (GET 방식) -->
+        <form th:action="@{/order}" method="get" class="form-group">
+            <label for="itemSelect" class="form-label">1. 상품 선택</label>
             <select id="itemSelect" name="itemId" class="form-select" onchange="this.form.submit()">
                 <option value="" disabled th:selected="${selectedItemId == null}">-- 상품을 선택해 주세요 --</option>
                 <option th:each="item : ${items}"
@@ -27,104 +93,62 @@
                         th:selected="${item.id == selectedItemId}">
                 </option>
             </select>
-        </div>
-    </form>
+        </form>
 
-    <!-- [2단계] 결제 확인 페이지로 이동 폼 (POST /order/checkout) -->
-    <form id="orderForm" th:action="@{/order/checkout}" method="post" onsubmit="return validateStock()">
-        <!-- 선택된 itemId 숨겨서 전달 -->
-        <input type="hidden" name="itemId" th:value="${selectedItemId}">
+        <!-- [2단계] 결제 확인 페이지로 이동 폼 (POST /order/checkout) -->
+        <form id="orderForm" th:action="@{/order/checkout}" method="post">
+            <!-- 선택된 itemId 숨겨서 전달 -->
+            <input type="hidden" name="itemId" th:value="${selectedItemId}">
 
-        <!-- 주문자 정보 -->
-        <div class="mb-3">
-            <label for="memberName" class="form-label fw-bold">주문자 성함</label>
-            <input type="text" id="memberName" name="memberName" class="form-control"
-                   th:value="${loginMember != null ? loginMember.name : ''}" readonly required>
-        </div>
+            <!-- 주문자 정보 -->
+            <div class="form-group">
+                <label for="memberName" class="form-label">주문자 성함</label>
+                <input type="text" id="memberName" name="memberName" class="form-control"
+                       th:value="${loginMember != null ? loginMember.name : ''}" readonly required>
+            </div>
 
-        <!-- 2. 옵션/사이즈 선택 -->
-        <div class="mb-3">
-            <label for="optionSelect" class="form-label fw-bold">2. 사이즈/옵션 선택</label>
+            <!-- 2. 옵션/사이즈 선택 -->
+            <div class="form-group">
+                <label for="optionSelect" class="form-label">2. 사이즈/옵션 선택</label>
 
-            <!-- 상품 선택 전 -->
-            <select id="optionSelect" name="itemOptionId" class="form-select" th:if="${options == null}" disabled required>
-                <option value="" selected disabled>-- 먼저 위에서 상품을 선택해 주세요 --</option>
-            </select>
+                <!-- 상품 선택 전 -->
+                <select id="optionSelect" name="itemOptionId" class="form-select" th:if="${options == null}" disabled required>
+                    <option value="" selected disabled>-- 먼저 위에서 상품을 선택해 주세요 --</option>
+                </select>
 
-            <!-- 상품 선택 후: data-stock 속성에 재고 수량 저장 -->
-            <select id="optionSelect" name="itemOptionId" class="form-select" th:if="${options != null}" required onchange="updateMaxStock()">
-                <option value="" selected disabled data-stock="0">-- 사이즈를 선택해 주세요 --</option>
-                <option th:each="opt : ${options}"
-                        th:value="${opt.id}"
-                        th:data-stock="${opt.stockQuantity}"
-                        th:disabled="${opt.stockQuantity == 0}"
-                        th:text="${opt.size} + (${opt.stockQuantity == 0} ? ' [품절]' : ' (남은 재고: ' + ${opt.stockQuantity} + '개)')">
-                </option>
-            </select>
-        </div>
+                <!-- 상품 선택 후 -->
+                <select id="optionSelect" name="itemOptionId" class="form-select" th:if="${options != null}" required>
+                    <option value="" selected disabled>-- 사이즈를 선택해 주세요 --</option>
+                    <option th:each="opt : ${options}"
+                            th:value="${opt.id}"
+                            th:disabled="${opt.stockQuantity == 0}"
+                            th:text="${opt.size} + (${opt.stockQuantity == 0} ? ' [품절]' : ' (남은 재고: ' + ${opt.stockQuantity} + '개)')">
+                    </option>
+                </select>
+            </div>
 
-        <!-- 3. 수량 입력 -->
-        <div class="mb-3">
-            <label for="count" class="form-label fw-bold">주문 수량</label>
-            <input type="number" id="count" name="count" class="form-control" min="1" value="1" required onchange="checkQuantityInput()">
-        </div>
+            <!-- 3. 수량 입력 -->
+            <div class="form-group">
+                <label for="count" class="form-label">주문 수량</label>
+                <input type="number" id="count" name="count" class="form-control" min="1" value="1" required>
+            </div>
 
-        <!-- 버튼 클릭 시 /order/checkout 호출 -->
-        <button type="submit" class="btn btn-primary w-100 py-2 mt-3" th:disabled="${options == null}">
-            결제하기로 이동
-        </button>
-    </form>
-</div>
+            <!-- 제출 버튼 -->
+            <button type="submit" class="btn-submit" th:disabled="${options == null}">
+                결제하기로 이동
+            </button>
+            <a href="/items" class="btn-cancel">취소하고 상품 목록으로 돌아가기</a>
+        </form>
+    </div>
+</main>
 
-<!-- Bootstrap JS (Alert 닫기 버튼 기능을 위함) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Standardized Footer -->
+<footer>
+    <p>© 2026 <strong>DropFit</strong>. All rights reserved.</p>
+    <p style="font-size: 0.8rem; color: var(--sub-text); margin-top: 0.25rem;">
+        Powered by Spring Boot, Spring Data JPA, Thymeleaf & MySQL
+    </p>
+</footer>
 
-<!-- 재고 검증 자바스크립트 -->
-<script>
-    // 옵션 변경 시 max 속성 동적 변경
-    function updateMaxStock() {
-        const optionSelect = document.getElementById('optionSelect');
-        const selectedOption = optionSelect.options[optionSelect.selectedIndex];
-        const stock = parseInt(selectedOption.getAttribute('data-stock')) || 0;
-
-        const countInput = document.getElementById('count');
-        if (stock > 0) {
-            countInput.max = stock;
-        } else {
-            countInput.removeAttribute('max');
-        }
-        checkQuantityInput();
-    }
-
-    // 수량 입력 변경 시 즉시 검증
-    function checkQuantityInput() {
-        const optionSelect = document.getElementById('optionSelect');
-        if (!optionSelect || optionSelect.selectedIndex <= 0) return;
-
-        const selectedOption = optionSelect.options[optionSelect.selectedIndex];
-        const stock = parseInt(selectedOption.getAttribute('data-stock')) || 0;
-        const countInput = document.getElementById('count');
-        const count = parseInt(countInput.value) || 0;
-
-        if (count > stock) {
-            alert(`재고가 부족합니다. (현재 남은 재고: ${stock}개)`);
-            countInput.value = stock; // 재고 최대 수량으로 자동 변경
-        }
-    }
-
-    // 폼 제출 시 최종 재고 검증
-    function validateStock() {
-        const optionSelect = document.getElementById('optionSelect');
-        const selectedOption = optionSelect.options[optionSelect.selectedIndex];
-        const stock = parseInt(selectedOption.getAttribute('data-stock')) || 0;
-        const count = parseInt(document.getElementById('count').value) || 0;
-
-        if (count > stock) {
-            alert(`주문 수량이 남은 재고(${stock}개)보다 많습니다.`);
-            return false; // 폼 제출 중단
-        }
-        return true;
-    }
-</script>
 </body>
 </html>

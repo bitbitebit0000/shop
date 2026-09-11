@@ -80,7 +80,7 @@
         }
         .btn-admin:hover { background: #1d4ed8; }
 
-        /* 🔥 메인 중앙 검색 배너 영역 */
+        /* 🔥 메인 중앙 검색 배너 섹션 */
         .hero-search-section {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             color: #ffffff;
@@ -186,9 +186,7 @@
         .btn-order { display: block; width: 100%; padding: 0.6rem; background: var(--accent); color: #fff; border: none; font-weight: bold; cursor: pointer; text-align: center; border-radius: 0 0 6px 6px; text-decoration: none; }
         .btn-order:hover { background: #1f2937; }
 
-        /* 품절(SOLD OUT) 버튼 스타일 */
         .btn-disabled { background: #9ca3af; cursor: not-allowed; }
-        .btn-disabled:hover { background: #9ca3af; }
 
         /* Footer */
         footer { text-align: center; padding: 2rem; color: var(--sub-text); border-top: 1px solid var(--border); font-size: 0.85rem; }
@@ -205,23 +203,23 @@
 <body>
 
 <header>
-    <a href="/" class="logo">DropFit</a>
+    <a th:href="@{/}" class="logo">DropFit</a>
     <nav>
-        <a href="/items">상품목록</a>
+        <a th:href="@{/items}">상품목록</a>
         <a th:if="${session.loginMember != null and (#strings.toString(session.loginMember.role) == 'ADMIN' or #strings.toString(session.loginMember.role) == 'ROLE_ADMIN')}"
-           href="/createItemForm">상품등록</a>
+           th:href="@{/createItemForm}">상품등록</a>
         <a th:if="${session.loginMember != null and (#strings.toString(session.loginMember.role) == 'ADMIN' or #strings.toString(session.loginMember.role) == 'ROLE_ADMIN')}"
-           href="/admin" class="nav-admin-link">⚙️ 관리자 센터</a>
+           th:href="@{/admin}" class="nav-admin-link">⚙️ 관리자 센터</a>
 
         <a th:if="${session.loginMember != null and !#strings.contains(session.loginMember.role, 'ADMIN')}"
-           href="/mypage" style="font-weight: bold; color: var(--accent);">마이페이지</a>
+           th:href="@{/mypage}" style="font-weight: bold; color: var(--accent);">마이페이지</a>
 
         <form th:if="${session.loginMember != null}" th:action="@{/logout}" method="post" style="display: inline;">
             <button type="submit" class="btn-logout">로그아웃</button>
         </form>
 
-        <a th:if="${session.loginMember == null}" href="/login">로그인</a>
-        <a th:if="${session.loginMember == null}" href="/sign-up">회원가입</a>
+        <a th:if="${session.loginMember == null}" th:href="@{/login}">로그인</a>
+        <a th:if="${session.loginMember == null}" th:href="@{/sign-up}">회원가입</a>
     </nav>
 </header>
 
@@ -232,27 +230,27 @@
             <span class="admin-tag">ADMIN</span>
             <span class="admin-banner-title">관리자 전용 페이지로 이동하여 신규 드롭 상품을 등록하시겠습니까?</span>
         </div>
-        <a href="/admin" class="btn-admin">관리자 모드 이동 &rarr;</a>
+        <a th:href="@{/admin}" class="btn-admin">관리자 모드 이동 &rarr;</a>
     </div>
 
-    <!-- 🔥 메인 중앙 검색 배너 영역 (searchQuery 파라미터로 전송) -->
+    <!-- 🔥 메인 중앙 검색 배너 영역 -->
     <div class="hero-search-section">
         <h1 class="hero-title">원하는 드롭 아이템을 검색해보세요</h1>
         <p class="hero-subtitle">한정 수량 스트릿 패션 & 인기 브랜드 드롭 컬렉션</p>
 
-        <!-- name="searchQuery" 로 수정 완료 -->
+        <!-- 상품 목록 페이지(/items)의 검색 쿼리로 전송 -->
         <form th:action="@{/items}" method="get" class="search-box-form">
-            <input type="text" name="searchQuery" class="search-input" placeholder="상품명 또는 키워드를 입력하세요 (예: 후드티, 스니커즈)" required>
+            <input type="text" name="searchKeyword" class="search-input" placeholder="상품명 또는 키워드를 입력하세요 (예: 후드티, 스니커즈)" required>
             <button type="submit" class="btn-search">검색하기</button>
         </form>
 
-        <!-- 태그 링크 파라미터도 searchQuery=로 수정 완료 -->
+        <!-- 인기 추천 태그 (클릭 시 해당 검색어로 바로 이동) -->
         <div class="popular-tags">
             <span class="tag-label">추천 키워드 :</span>
-            <a th:href="@{/items(searchQuery='후드티')}" class="tag-chip">#후드티</a>
-            <a th:href="@{/items(searchQuery='스니커즈')}" class="tag-chip">#스니커즈</a>
-            <a th:href="@{/items(searchQuery='티셔츠')}" class="tag-chip">#티셔츠</a>
-            <a th:href="@{/items(searchQuery='볼캡')}" class="tag-chip">#볼캡</a>
+            <a th:href="@{/items(searchKeyword='후드티')}" class="tag-chip">#후드티</a>
+            <a th:href="@{/items(searchKeyword='스니커즈')}" class="tag-chip">#스니커즈</a>
+            <a th:href="@{/items(searchKeyword='티셔츠')}" class="tag-chip">#티셔츠</a>
+            <a th:href="@{/items(searchKeyword='볼캡')}" class="tag-chip">#볼캡</a>
         </div>
     </div>
 

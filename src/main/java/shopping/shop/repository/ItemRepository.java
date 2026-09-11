@@ -36,13 +36,19 @@ public class ItemRepository {
                 .getResultList();
     }
 
-    // 2. Item + Option을 fetch join으로 함께 검색할 때
+    // 2. Item + Option을 fetch join으로 함께 검색할 때 (공백 무시 검색)
     public List<Item> findItemsWithOptionBySearch(String searchQuery) {
-        return em.createQuery("select distinct i from Item i left join fetch i.options where i.name like :searchQuery", Item.class)
-                .setParameter("searchQuery", "%" + searchQuery + "%")
+        // 1. 전달받은 검색어의 모든 공백 제거 (null 처리 포함)
+        String cleanQuery = (searchQuery != null) ? searchQuery.replaceAll("\\s+", "") : "";
+
+        // 2. JPQL REPLACE 함수를 활용하여 DB의 i.name 내 모든 공백 제거 후 비교
+        return em.createQuery(
+                        "select distinct i from Item i " +
+                                "left join fetch i.options " +
+                                "where replace(i.name, ' ', '') like :searchQuery", Item.class)
+                .setParameter("searchQuery", "%" + cleanQuery + "%")
                 .getResultList();
     }
-
 
 
 }

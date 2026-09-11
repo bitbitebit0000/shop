@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CommerceLab - 마이페이지</title>
+    <title>DropFit - 마이페이지</title>
     <style>
         :root {
             --bg: #f8f9fa;
@@ -11,7 +11,7 @@
             --text: #212529;
             --sub-text: #6c757d;
             --border: #e9ecef;
-            --accent: #2563eb;
+            --accent: #111827;
             --success: #16a34a;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -19,7 +19,7 @@
 
         /* Header */
         header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.25rem; font-weight: bold; color: var(--accent); text-decoration: none; }
+        .logo { font-size: 1.4rem; font-weight: 900; color: var(--accent); text-decoration: none; letter-spacing: -0.5px; }
         nav a { margin-left: 1rem; text-decoration: none; color: var(--text); font-size: 0.9rem; font-weight: 500; }
 
         /* Layout Container & Grid */
@@ -46,7 +46,7 @@
         .badge { padding: 0.25rem 0.55rem; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
         .badge-paid { background: #dcfce7; color: var(--success); }
         .badge-ready { background: #fef9c3; color: #854d0e; }
-        .badge-shipped { background: #dbeafe; color: var(--accent); }
+        .badge-shipped { background: #dbeafe; color: #2563eb; }
         .badge-delivered { background: #e2e8f0; color: var(--text); }
 
         /* Buttons */
@@ -61,15 +61,15 @@
 
 <!-- Header -->
 <header>
-    <a href="/" class="logo">CommerceLab</a>
+    <a href="/" class="logo">DropFit</a>
     <nav>
-        <a href="/createItemForm">상품등록/주문</a>
         <a href="/items">상품목록</a>
-        <a href="/orders">주문조회</a>
 
         <!-- 동적 세션 메인 메뉴 -->
         <a th:if="${session.loginMember != null}" href="/mypage" style="font-weight: bold; color: var(--accent);">마이페이지</a>
-        <a th:if="${session.loginMember != null}" href="/logout">로그아웃</a>
+        <form th:if="${session.loginMember != null}" th:action="@{/logout}" method="post" style="display: inline;">
+            <button type="submit" style="background: none; border: none; color: var(--text); font-size: 0.9rem; font-weight: 500; cursor: pointer; padding: 0; margin-left: 1rem;">로그아웃</button>
+        </form>
         <a th:if="${session.loginMember == null}" href="/login">로그인</a>
     </nav>
 </header>
@@ -145,7 +145,7 @@
 
 <!-- Standardized Footer -->
 <footer>
-    <p>© 2026 <strong>CommerceLab</strong>. All rights reserved.</p>
+    <p>© 2026 <strong>DropFit</strong>. All rights reserved.</p>
     <p style="font-size: 0.8rem; color: var(--sub-text); margin-top: 0.25rem;">
         Powered by Spring Boot, Spring Data JPA, Thymeleaf & MySQL
     </p>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Commerce Lab - 상품 등록 </title>
+    <title>DropFit - 상품 등록</title>
     <style>
         :root {
             --bg: #f8f9fa;
@@ -11,98 +11,93 @@
             --text: #212529;
             --sub-text: #6c757d;
             --border: #e9ecef;
-            --accent: #2563eb;
+            --accent: #111827;
             --danger: #dc2626;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); line-height: 1.5; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
 
         /* Header */
         header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.25rem; font-weight: bold; color: var(--accent); text-decoration: none; }
+        .logo { font-size: 1.4rem; font-weight: 900; color: var(--accent); text-decoration: none; letter-spacing: -0.5px; }
         nav a { margin-left: 1rem; text-decoration: none; color: var(--text); font-size: 0.9rem; font-weight: 500; }
 
         /* Container & Form Card */
-        .container { max-width: 600px; margin: 3rem auto; padding: 0 1rem; }
-        .form-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .form-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 1.5rem; border-left: 4px solid var(--accent); padding-left: 0.5rem; }
+        .container { max-width: 520px; width: 100%; margin: 3rem auto; padding: 0 1rem; }
+        .form-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .form-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 1.5rem; border-left: 4px solid var(--accent); padding-left: 0.6rem; }
 
         /* Form Controls */
         .form-group { margin-bottom: 1.25rem; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 0.4rem; font-size: 0.9rem; }
+        .form-label { display: block; font-weight: 600; margin-bottom: 0.4rem; font-size: 0.85rem; color: var(--text); }
         .form-control { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
         .form-control:focus { border-color: var(--accent); }
 
         /* Buttons */
-        .btn-submit { width: 100%; padding: 0.8rem; background: var(--accent); color: #fff; border: none; font-size: 1rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 1rem; }
-        .btn-submit:hover { background: #1d4ed8; }
-        .btn-cancel { display: block; width: 100%; text-align: center; margin-top: 0.75rem; padding: 0.6rem; color: var(--sub-text); text-decoration: none; font-size: 0.9rem; }
+        .btn-submit { width: 100%; padding: 0.75rem; background: var(--accent); color: #fff; border: none; font-size: 1rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: background 0.2s; margin-top: 0.5rem; }
+        .btn-submit:hover { background: #1f2937; }
+        .btn-cancel { display: block; width: 100%; text-align: center; margin-top: 0.75rem; padding: 0.6rem; color: var(--sub-text); text-decoration: none; font-size: 0.85rem; }
+        .btn-cancel:hover { text-decoration: underline; }
 
         /* Footer */
-        footer { text-align: center; padding: 2rem; color: var(--sub-text); border-top: 1px solid var(--border); font-size: 0.85rem; margin-top: 4rem; }
+        footer { text-align: center; padding: 2rem; color: var(--sub-text); border-top: 1px solid var(--border); font-size: 0.85rem; margin-top: 3rem; }
     </style>
 </head>
 <body>
 
 <!-- Header -->
 <header>
-    <a href="/" class="logo">CommerceLab</a>
+    <a href="/" class="logo">DropFit</a>
     <nav>
-        <a href="/createItemForm">상품주문</a>
         <a href="/items">상품목록</a>
         <a href="/orders">주문조회</a>
-        <a href="/login">로그인</a>
+        <a href="/cart">장바구니</a>
+
+        <!-- 동적 세션 메인 메뉴 -->
+        <a th:if="${session.loginMember != null}" href="/mypage">마이페이지</a>
+        <a th:if="${session.loginMember != null}" href="/logout">로그아웃</a>
+        <a th:if="${session.loginMember == null}" href="/login">로그인</a>
     </nav>
 </header>
 
 <!-- Main Form Content -->
 <main class="container">
     <div class="form-card">
-        <div class="form-title">상품 등록</div>
+        <h1 class="form-title">🛍️ 신규 상품 등록</h1>
 
-        <form th:action="@{/order}" th:object="${itemForm}" method="post">
+        <form th:action="@{/items/new}" th:object="${itemForm}" method="post">
 
-            <!-- 상품 선택 드롭다운 (th:field가 itemId 값과 바인딩하여 자동으로 selected를 지정함) -->
+            <!-- 상품명 -->
             <div class="form-group">
-                <label for="itemId">등록할 상품 선택</label>
-                <select id="itemId" th:field="*{itemId}" class="form-control" required>
-                    <option value="">-- 상품을 선택하세요 --</option>
-                    <option value="1">[한정특가] 고급 게이밍 키보드 (89,000원)</option>
-                    <option value="2">무선 노이즈캔슬링 헤드폰 (198,000원)</option>
-                    <option value="3">초고속 C-Type 충전기 65W (24,500원)</option>
-                    <option value="4">스마트 디스플레이 거치대 (15,000원)</option>
-                </select>
+                <label for="name" class="form-label">상품명</label>
+                <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="예: [한정판] 고급 게이밍 키보드" required>
             </div>
 
-            <!-- 향후 할인 적용 등으로 주문 가격 변경가능 -->
+            <!-- 상품 가격 -->
             <div class="form-group">
-                <label for="itemPrice">상품 가격</label>
-                <input type="number" id="itemPrice" th:field="*{price}" class="form-control" placeholder="가격을 입력하세요 (예: 10000)" min="10000" required>
+                <label for="price" class="form-label">상품 가격 (원)</label>
+                <input type="number" id="price" th:field="*{price}" class="form-control" placeholder="가격을 입력하세요 (예: 89000)" min="0" required>
             </div>
 
-            <!-- 주문 수량 입력 -->
+            <!-- 재고 수량 -->
             <div class="form-group">
-                <label for="count">상품 수량</label>
-                <input type="number" id="count" th:field="*{count}" class="form-control" placeholder="수량을 입력하세요 (예: 1)" min="1" required>
-            </div>
-
-
-            <!-- 주문자 이름에서 상품이름으로 변경 -->
-            <div class="form-group">
-                <label for="itemName">상품 이름</label>
-                <input type="text" id="itemName" th:field="*{name}" class="form-control" placeholder="이름을 입력하세요" required>
+                <label for="stockQuantity" class="form-label">재고 수량 (개)</label>
+                <input type="number" id="stockQuantity" th:field="*{stockQuantity}" class="form-control" placeholder="초기 재고 수량을 입력하세요 (예: 100)" min="0" required>
             </div>
 
             <!-- 제출 버튼 -->
-            <button type="submit" class="btn-submit">주문하기</button>
-            <a href="/" class="btn-cancel">취소하고 홈으로 돌아가기</a>
+            <button type="submit" class="btn-submit">상품 등록하기</button>
+            <a href="/items" class="btn-cancel">취소하고 목록으로 돌아가기</a>
         </form>
     </div>
 </main>
 
-<!-- Footer -->
+<!-- Standardized Footer -->
 <footer>
-    <p>CommerceLab Portfolio Demo Page | Backend Powered by Spring Boot & MySQL</p>
+    <p>© 2026 <strong>DropFit</strong>. All rights reserved.</p>
+    <p style="font-size: 0.8rem; color: var(--sub-text); margin-top: 0.25rem;">
+        Powered by Spring Boot, Spring Data JPA, Thymeleaf & MySQL
+    </p>
 </footer>
 
 </body>

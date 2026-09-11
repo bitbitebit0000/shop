@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Commerce Lab - Checkout</title>
+    <title>DropFit - 결제 확인</title>
     <style>
         :root {
             --bg: #f8f9fa;
@@ -11,21 +11,34 @@
             --text: #212529;
             --sub-text: #6c757d;
             --border: #e9ecef;
-            --accent: #2563eb;
+            --accent: #111827;
+            --accent-hover: #1f2937;
+            --danger: #dc2626;
+            --danger-bg: #fef2f2;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); line-height: 1.5; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
 
+        /* Header */
         header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.25rem; font-weight: bold; color: var(--accent); text-decoration: none; }
+        .logo { font-size: 1.4rem; font-weight: 900; color: var(--accent); text-decoration: none; letter-spacing: -0.5px; }
+        nav { display: flex; align-items: center; }
+        nav a { margin-left: 1rem; text-decoration: none; color: var(--text); font-size: 0.9rem; font-weight: 500; }
 
-        .container { max-width: 600px; margin: 2.5rem auto; padding: 0 1rem; }
-        .pay-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .btn-logout { background: none; border: none; color: var(--text); font-size: 0.9rem; font-weight: 500; cursor: pointer; padding: 0; margin-left: 1rem; }
+        .btn-logout:hover { color: var(--accent); }
+
+        /* Container & Pay Card */
+        .container { max-width: 600px; width: 100%; margin: 2.5rem auto; padding: 0 1rem; }
+        .pay-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
         .pay-header { margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--accent); }
         .pay-title { font-size: 1.25rem; font-weight: bold; color: var(--text); }
 
+        /* Alert Banner */
+        .alert-error { background-color: var(--danger-bg); border: 1px solid #fecaca; color: var(--danger); padding: 0.85rem 1rem; border-radius: 6px; font-size: 0.9rem; margin-bottom: 1.25rem; font-weight: 500; }
+
         .section-title { font-size: 0.95rem; font-weight: 600; color: var(--sub-text); margin-bottom: 0.5rem; }
-        .summary-box { background: #f1f5f9; border-radius: 6px; padding: 1rem; margin-bottom: 1.5rem; }
+        .summary-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; margin-bottom: 1.5rem; }
 
         .item-info-box { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
         .item-img { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); background-color: #ffffff; flex-shrink: 0; }
@@ -35,32 +48,58 @@
         .item-price { font-size: 0.9rem; font-weight: 600; color: var(--text); margin-top: 0.25rem; }
 
         .summary-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.95rem; }
-        .total-price { font-size: 1.15rem; font-weight: bold; color: var(--accent); border-top: 1px solid var(--border); margin-top: 0.5rem; padding-top: 0.5rem; }
+        .total-price { font-size: 1.15rem; font-weight: bold; color: var(--accent); border-top: 1px dashed var(--border); margin-top: 0.5rem; padding-top: 0.75rem; }
 
+        /* Payment Methods */
         .pay-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.5rem; }
         .pay-method-item input[type="radio"] { display: none; }
         .pay-method-label { display: block; border: 1px solid var(--border); padding: 0.8rem; border-radius: 6px; text-align: center; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; background: #ffffff; }
-        .pay-method-item input[type="radio"]:checked + .pay-method-label { border-color: var(--accent); background: #eff6ff; color: var(--accent); }
+        .pay-method-item input[type="radio"]:checked + .pay-method-label { border-color: var(--accent); background: #f3f4f6; color: var(--accent); font-weight: 700; }
 
+        /* Buttons */
         .btn-group { display: flex; gap: 0.75rem; margin-top: 1.75rem; }
-        .btn { flex: 1; padding: 0.8rem; border-radius: 6px; font-weight: bold; font-size: 0.95rem; cursor: pointer; text-align: center; text-decoration: none; border: none; }
+        .btn { flex: 1; padding: 0.8rem; border-radius: 6px; font-weight: bold; font-size: 0.95rem; cursor: pointer; text-align: center; text-decoration: none; border: none; transition: background 0.2s; }
         .btn-pay { background: var(--accent); color: #fff; }
-        .btn-pay:hover { background: #1d4ed8; }
+        .btn-pay:hover { background: var(--accent-hover); }
         .btn-cancel { background: #e2e8f0; color: var(--text); }
+        .btn-cancel:hover { background: #cbd5e1; }
 
+        /* Footer */
         footer { text-align: center; padding: 2rem; color: var(--sub-text); border-top: 1px solid var(--border); font-size: 0.85rem; margin-top: 3rem; }
     </style>
 </head>
 <body>
 
+<!-- Header -->
 <header>
-    <a href="/" class="logo">CommerceLab</a>
+    <a th:href="@{/}" class="logo">DropFit</a>
+    <nav>
+        <a th:href="@{/items}">상품목록</a>
+        <a th:href="@{/orders}">주문조회</a>
+        <a th:href="@{/cart}">장바구니</a>
+
+        <!-- 동적 세션 메인 메뉴 -->
+        <a th:if="${session.loginMember != null}" th:href="@{/mypage}">마이페이지</a>
+
+        <!-- POST 전송 방식 로그아웃 폼 -->
+        <form th:if="${session.loginMember != null}" th:action="@{/logout}" method="post" style="display: inline;">
+            <button type="submit" class="btn-logout">로그아웃</button>
+        </form>
+
+        <a th:if="${session.loginMember == null}" th:href="@{/login}">로그인</a>
+    </nav>
 </header>
 
+<!-- Main Checkout Content -->
 <main class="container">
     <div class="pay-card">
         <div class="pay-header">
-            <h2 class="pay-title">주문 및 결제 확인</h2>
+            <h1 class="pay-title">주문 및 결제 확인</h1>
+        </div>
+
+        <!-- 예외/오류 메시지 출력 -->
+        <div th:if="${errorMessage}" class="alert-error" th:text="${errorMessage}">
+            결제 진행 중 오류가 발생했습니다.
         </div>
 
         <!-- 주문 정보 요약 -->
@@ -81,7 +120,7 @@
 
             <div class="summary-row">
                 <span>주문 회원</span>
-                <strong th:text="${loginMember.name}">홍길동</strong>
+                <strong th:text="${loginMember != null ? loginMember.name : ''}">홍길동</strong>
             </div>
             <div class="summary-row total-price">
                 <span>최종 결제 금액</span>
@@ -91,7 +130,7 @@
 
         <!-- 최종 주문/결제 승인 폼 -->
         <form th:action="@{/order}" method="post">
-            <!-- 서버로 실제 전송할 데이터 (itemOptionId 필수) -->
+            <!-- 서버로 실제 전송할 데이터 -->
             <input type="hidden" name="itemId" th:value="${item.id}">
             <input type="hidden" name="itemOptionId" th:value="${itemOptionId}">
             <input type="hidden" name="count" th:value="${count}">
@@ -120,14 +159,20 @@
             <!-- 버튼 영역 -->
             <div class="btn-group">
                 <a th:href="@{/order(itemId=${item.id})}" class="btn btn-cancel">이전으로</a>
-                <button type="submit" class="btn btn-pay" th:text="${#numbers.formatInteger(totalPrice, 0, 'COMMA')} + '원 결제하기'">100,000원 결제하기</button>
+                <button type="submit" class="btn btn-pay" th:text="${#numbers.formatInteger(totalPrice, 0, 'COMMA')} + '원 결제하기'">
+                    100,000원 결제하기
+                </button>
             </div>
         </form>
     </div>
 </main>
 
+<!-- Standardized Footer -->
 <footer>
-    <p>CommerceLab Portfolio Demo Page | Backend Powered by Spring Boot & MySQL</p>
+    <p>© 2026 <strong>DropFit</strong>. All rights reserved.</p>
+    <p style="font-size: 0.8rem; color: var(--sub-text); margin-top: 0.25rem;">
+        Powered by Spring Boot, Spring Data JPA, Thymeleaf & MySQL
+    </p>
 </footer>
 
 </body>

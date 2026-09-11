@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CommerceLab - 주문 완료</title>
+    <title>DropFit - 주문 완료</title>
     <style>
         :root {
             --bg: #f8f9fa;
@@ -11,62 +11,102 @@
             --text: #212529;
             --sub-text: #6c757d;
             --border: #e9ecef;
-            --accent: #2563eb;
+            --accent: #111827;
             --success: #16a34a;
+            --success-bg: #dcfce7;
+            --danger: #dc2626;
+            --danger-bg: #fef2f2;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); line-height: 1.5; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
 
+        /* Header */
         header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.25rem; font-weight: bold; color: var(--accent); text-decoration: none; }
+        .logo { font-size: 1.4rem; font-weight: 900; color: var(--accent); text-decoration: none; letter-spacing: -0.5px; }
+        nav { display: flex; align-items: center; }
+        nav a { margin-left: 1rem; text-decoration: none; color: var(--text); font-size: 0.9rem; font-weight: 500; }
 
-        .container { max-width: 550px; margin: 3rem auto; padding: 0 1rem; }
-        .complete-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 2.5rem 2rem; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .btn-logout { background: none; border: none; color: var(--text); font-size: 0.9rem; font-weight: 500; cursor: pointer; padding: 0; margin-left: 1rem; }
+        .btn-logout:hover { color: var(--accent); }
 
-        .success-icon { width: 64px; height: 64px; background: #dcfce7; color: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; font-size: 2rem; font-weight: bold; }
+        /* Container & Complete Card */
+        .container { max-width: 550px; width: 100%; margin: 3rem auto; padding: 0 1rem; }
+        .complete-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 2.5rem 2rem; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+
+        /* Alert Banner */
+        .alert-error { background-color: var(--danger-bg); border: 1px solid #fecaca; color: var(--danger); padding: 0.85rem 1rem; border-radius: 6px; font-size: 0.9rem; margin-bottom: 1.25rem; font-weight: 500; text-align: left; }
+
+        /* Success Visuals */
+        .success-icon { width: 64px; height: 64px; background: var(--success-bg); color: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; font-size: 2rem; font-weight: bold; }
         .title { font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem; }
         .subtitle { color: var(--sub-text); font-size: 0.95rem; margin-bottom: 2rem; }
 
+        /* Order Info Details */
         .info-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; text-align: left; margin-bottom: 2rem; }
-        .info-row { display: flex; justify-content: space-between; margin-bottom: 0.6rem; font-size: 0.95rem; }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 0.65rem; font-size: 0.95rem; }
         .info-row:last-child { margin-bottom: 0; }
         .info-label { color: var(--sub-text); }
-        .info-value { font-weight: 600; }
-        .total-amount { color: var(--accent); font-size: 1.1rem; border-top: 1px dashed var(--border); padding-top: 0.6rem; margin-top: 0.6rem; }
+        .info-value { font-weight: 600; text-align: right; word-break: break-all; }
+        .total-amount { color: var(--accent); font-size: 1.1rem; border-top: 1px dashed var(--border); padding-top: 0.75rem; margin-top: 0.75rem; }
 
+        /* Action Buttons */
         .btn-group { display: flex; gap: 0.75rem; }
-        .btn { flex: 1; padding: 0.85rem; border-radius: 8px; font-weight: bold; font-size: 0.95rem; text-decoration: none; text-align: center; border: none; cursor: pointer; }
+        .btn { flex: 1; padding: 0.85rem; border-radius: 6px; font-weight: bold; font-size: 0.95rem; text-decoration: none; text-align: center; border: none; cursor: pointer; transition: background 0.2s; }
         .btn-primary { background: var(--accent); color: #fff; }
+        .btn-primary:hover { background: #1f2937; }
         .btn-secondary { background: #e2e8f0; color: var(--text); }
+        .btn-secondary:hover { background: #cbd5e1; }
+
+        /* Footer */
+        footer { text-align: center; padding: 2rem; color: var(--sub-text); border-top: 1px solid var(--border); font-size: 0.85rem; margin-top: 3rem; }
     </style>
 </head>
 <body>
 
+<!-- Header -->
 <header>
-    <a href="/" class="logo">CommerceLab</a>
+    <a th:href="@{/}" class="logo">DropFit</a>
+    <nav>
+        <a th:href="@{/items}">상품목록</a>
+        <!-- 동적 세션 메인 메뉴 -->
+        <a th:if="${session.loginMember != null}" th:href="@{/mypage}">마이페이지</a>
+
+        <!-- POST 전송 방식 로그아웃 폼 -->
+        <form th:if="${session.loginMember != null}" th:action="@{/logout}" method="post" style="display: inline;">
+            <button type="submit" class="btn-logout">로그아웃</button>
+        </form>
+
+        <a th:if="${session.loginMember == null}" th:href="@{/login}">로그인</a>
+    </nav>
 </header>
 
+<!-- Main Order Complete Content -->
 <main class="container">
     <div class="complete-card">
+        <!-- 백엔드 전달 에러 메시지가 있을 경우 안내 -->
+        <div th:if="${errorMessage}" class="alert-error" th:text="${errorMessage}">
+            처리 중 알림 메시지가 있습니다.
+        </div>
+
         <div class="success-icon">✓</div>
-        <h2 class="title">주문이 정상 완료되었습니다!</h2>
+        <h1 class="title">주문이 정상 완료되었습니다!</h1>
         <p class="subtitle">고객님의 주문이 성공적으로 접수되었습니다.</p>
 
         <div class="info-box">
-            <!-- 1. 주문 번호 (1024 등) -->
+            <!-- 1. 주문 번호 -->
             <div class="info-row">
                 <span class="info-label">주문 번호</span>
                 <span class="info-value" th:text="${order.id}">1024</span>
             </div>
-            <!-- 2. 주문 상품 이름, 옵션명 및 수량 -->
+            <!-- 2. 주문 상품 정보 -->
             <div class="info-row">
                 <span class="info-label">주문 상품</span>
                 <span class="info-value"
-                      th:text="${order.orderItems[0].itemOption.item.name} + ' [' + ${order.orderItems[0].itemOption.optionName} + '] (' + ${order.orderItems[0].count} + '개)'">
-                    상품명 [옵션명] (1개)
+                      th:text="${order.orderItems[0].itemOption.item.name} + ' [' + ${order.orderItems[0].itemOption.size} + '] (' + ${order.orderItems[0].count} + '개)'">
+                    상품명 [사이즈] (1개)
                 </span>
             </div>
-            <!-- 3. 결제 수단 (CARD, KAKAOPAY 등) -->
+            <!-- 3. 결제 수단 -->
             <div class="info-row">
                 <span class="info-label">결제 수단</span>
                 <span class="info-value" th:text="${payType}">CARD</span>
@@ -74,21 +114,24 @@
             <!-- 4. 최종 결제 금액 -->
             <div class="info-row total-amount">
                 <span class="info-label" style="color:var(--text)">최종 결제 금액</span>
-                <span class="info-value" th:text="${#numbers.formatInteger(order.getTotalPrice(), 0, 'COMMA')} + '원'">333원</span>
+                <span class="info-value" th:text="${#numbers.formatInteger(order.getTotalPrice(), 0, 'COMMA')} + '원'">33,000원</span>
             </div>
         </div>
 
         <div class="btn-group">
-            <a href="/" class="btn btn-secondary">메인으로</a>
-            <a href="/orders" class="btn btn-primary">주문 내역 전체 보기</a>
+            <a th:href="@{/}" class="btn btn-secondary">메인으로</a>
+            <a th:href="@{/orders}" class="btn btn-primary">주문 내역 전체 보기</a>
         </div>
     </div>
 </main>
-<script th:inline="javascript">
-    var errorMessage = /*[[${errorMessage}]]*/ null;
-    if (errorMessage) {
-        alert(errorMessage);
-    }
-</script>
+
+<!-- Standardized Footer -->
+<footer>
+    <p>© 2026 <strong>DropFit</strong>. All rights reserved.</p>
+    <p style="font-size: 0.8rem; color: var(--sub-text); margin-top: 0.25rem;">
+        Powered by Spring Boot, Spring Data JPA, Thymeleaf & MySQL
+    </p>
+</footer>
+
 </body>
 </html>

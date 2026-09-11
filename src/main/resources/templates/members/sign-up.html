@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CommerceLab - 회원가입</title>
+    <title>DropFit - 회원가입</title>
     <style>
         :root {
             --bg: #f8f9fa;
@@ -11,7 +11,7 @@
             --text: #212529;
             --sub-text: #6c757d;
             --border: #e9ecef;
-            --accent: #2563eb;
+            --accent: #111827;
             --danger: #dc2626;
             --danger-bg: #fef2f2;
         }
@@ -20,7 +20,7 @@
 
         /* Header */
         header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.25rem; font-weight: bold; color: var(--accent); text-decoration: none; }
+        .logo { font-size: 1.4rem; font-weight: 900; color: var(--accent); text-decoration: none; letter-spacing: -0.5px; }
         nav a { margin-left: 1rem; text-decoration: none; color: var(--text); font-size: 0.9rem; font-weight: 500; }
 
         /* Signup Container */
@@ -53,11 +53,11 @@
 
         /* Buttons */
         .btn-signup { width: 100%; padding: 0.75rem; background: var(--accent); color: #fff; border: none; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: background 0.2s; margin-top: 0.5rem; }
-        .btn-signup:hover { background: #1d4ed8; }
+        .btn-signup:hover { background: #1f2937; }
 
         /* Footer Links */
         .signup-footer { margin-top: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--sub-text); }
-        .signup-footer a { color: var(--accent); text-decoration: none; font-weight: 500; margin-left: 0.3rem; }
+        .signup-footer a { color: var(--accent); text-decoration: none; font-weight: bold; margin-left: 0.3rem; }
         .signup-footer a:hover { text-decoration: underline; }
 
         /* Footer */
@@ -68,12 +68,9 @@
 
 <!-- Header -->
 <header>
-    <a href="/" class="logo">CommerceLab</a>
+    <a href="/" class="logo">DropFit</a>
     <nav>
         <a href="/items">상품목록</a>
-        <a href="/orders">주문조회</a>
-        <a href="/cart">장바구니</a>
-
         <!-- 동적 세션 메인 메뉴 -->
         <a th:if="${session.loginMember != null}" href="/mypage" style="font-weight: bold; color: var(--accent);">마이페이지</a>
         <a th:if="${session.loginMember != null}" href="/logout">로그아웃</a>
@@ -85,7 +82,7 @@
 <main class="signup-wrapper">
     <div class="signup-card">
         <h1 class="signup-title">회원가입</h1>
-        <p class="signup-subtitle">CommerceLab의 회원이 되어 다양한 서비스를 이용해보세요.</p>
+        <p class="signup-subtitle">DropFit의 회원이 되어 다양한 한정판 선착순 혜택을 이용해보세요.</p>
 
         <!-- 중복 회원 등 예외 발생 시에만 상단에 팝업 -->
         <div th:if="${errorMessage}" class="alert-error" th:text="${errorMessage}"></div>
@@ -100,7 +97,7 @@
             <!-- 이메일 (아이디) -->
             <div class="form-group">
                 <label for="email" class="form-label">이메일 (아이디)</label>
-                <input type="email" id="email" th:field="*{email}" class="form-input" placeholder="example@commercelab.com" required>
+                <input type="email" id="email" th:field="*{email}" class="form-input" placeholder="example@dropfit.com" required>
             </div>
 
             <!-- 비밀번호 -->
@@ -130,7 +127,7 @@
 
 <!-- Standardized Footer -->
 <footer>
-    <p>© 2026 <strong>CommerceLab</strong>. All rights reserved.</p>
+    <p>© 2026 <strong>DropFit</strong>. All rights reserved.</p>
     <p style="font-size: 0.8rem; color: var(--sub-text); margin-top: 0.25rem;">
         Powered by Spring Boot, Spring Data JPA, Thymeleaf & MySQL
     </p>

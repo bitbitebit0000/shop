@@ -19,7 +19,6 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final ItemRepository itemRepository;
     private final MemberRepository memberRepository;
     private final ItemOptionRepository itemOptionRepository;
 
