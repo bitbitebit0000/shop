@@ -1,0 +1,58 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build -x test
+
+      - name: Copy JAR to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "build/libs/*.jar"
+          target: "/home/ubuntu/shop/"
+          strip_components: 2
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            JAR_NAME=$(ls /home/ubuntu/shop/*.jar | head -n 1)
+            CURRENT_PID=$(pgrep -f "java -jar")
+            if [ -n "$CURRENT_PID" ]; then
+              echo "Stopping current running application (PID: $CURRENT_PID)..."
+              kill -15 $CURRENT_PID
+              sleep 5
+            fi
+            
+            nohup java -jar \
+              -Dspring.profiles.active=prod \
+              -DSPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/shop \
+              -DSPRING_DATASOURCE_USERNAME=shopuser \
+              -DSPRING_DATASOURCE_PASSWORD='${{ secrets.DB_PASSWORD }}' \
+              $JAR_NAME > /home/ubuntu/shop/app.log 2>&1 &
+            
+            echo "Deployment completed successfully!"
