@@ -70,46 +70,36 @@ Spring Boot와 JPA를 기반으로 구현한 의류 쇼핑몰 백엔드 서비�
       session.setAttribute("redirectURL", requestURI);
       return "redirect:/login";
   }
-  마이페이지에서는 다음 정보를 확인할 수 있습니다:
-
-회원 정보
-
-주소
-
-주문 내역
-
-주문 상태
-
-주문 상품 정보
-
+  
+ * 마이페이지에서는 다음 정보를 확인할 수 있습니다:
+  * **회원 정보**: 기본 계정 및 개인 정보
+  * **주소**: 등록된 배송지 정보
+  * **주문 내역**: 사용자의 전체 주문 기록
+  * **주문 상태**: 상품 준비, 배송 중, 완료 등 주문 처리 상태
+  * **주문 상품 정보**: 주문한 상품의 상세 내역 및 옵션 정보
 
 ### 🔐 관리자 기능
-관리자 대시보드 (GET /admin)
+* **관리자 대시보드 (`GET /admin`)**
+  * 관리자 전용 페이지로 다음 통계 정보를 제공합니다.
+    * **전체 주문 수**
+    * **총 매출**
+    * **등록 상품 수**
+    * **전체 회원 수**
+    * **전체 주문 목록**
 
-관리자 전용 페이지로 다음 통계 정보를 제공합니다.
+* 관리자 페이지 접근 시 세션의 로그인 회원을 확인하고 `Role.ADMIN` 권한을 검증합니다.
+  ```java
+  Member loginMember = (Member) session.getAttribute("loginMember");
+  if (loginMember == null) {
+      return "redirect:/login";
+  }
+  if (loginMember.getRole() != Role.ADMIN) {
+      return "redirect:/";
+  }
+* 일반 사용자가 관리자 페이지에 접근할 경우 메인 페이지로 리다이렉트됩니다.
+* 전체 주문을 조회한 뒤 취소되지 않은 주문을 기준으로 총 매출을 계산합니다.
 
-전체 주문 수
-
-총 매출
-
-등록 상품 수
-
-전체 회원 수
-
-전체 주문 목록
-
-관리자 페이지 접근 시 세션의 로그인 회원을 확인하고 Role.ADMIN 권한을 검증합니다.
-Member loginMember = (Member) session.getAttribute("loginMember");
-if (loginMember == null) {
-    return "redirect:/login";
-}
-if (loginMember.getRole() != Role.ADMIN) {
-    return "redirect:/";
-}
-일반 사용자가 관리자 페이지에 접근할 경우 메인 페이지로 리다이렉트됩니다.
-
-전체 주문을 조회한 뒤 취소되지 않은 주문을 기준으로 총 매출을 계산합니다.
-
+```java
 int totalSales = 0;
 for (Order o : orders) {
     if (o.getOrderStatus() != null && o.getOrderStatus() != OrderStatus.CANCEL) {
@@ -117,54 +107,54 @@ for (Order o : orders) {
     }
 }
 
-관리자 초기 데이터 자동 생성
+* **관리자 초기 데이터 자동 생성**
+  * 애플리케이션이 실행될 때 관리자 계정이 존재하지 않는 경우 기본 관리자 계정을 자동으로 생성합니다.
+  * `ApplicationReadyEvent`를 활용하여 애플리케이션 준비가 완료된 시점에 초기화 로직을 실행합니다.
 
-애플리케이션이 실행될 때 관리자 계정이 존재하지 않는 경우 기본 관리자 계정을 자동으로 생성합니다.
 
-ApplicationReadyEvent를 활용하여 애플리케이션 준비가 완료된 시점에 초기화 로직을 실행합니다.
-
+```java
 @EventListener(ApplicationReadyEvent.class)
 public void init() {
     initService.dbInit();
 }
-관리자 계정이 이미 존재하는지 이메일을 기준으로 확인합니다.
-if (memberRepository.findByEmail("admin@dropfit.com").isEmpty()) {
-    ...
-}
-관리자 정보
-Email: admin@dropfit.com
 
-Password: admin123
+* 관리자 계정이 이미 존재하는지 이메일을 기준으로 확인합니다.
+  ```java
+  if (memberRepository.findByEmail("admin@dropfit.com").isEmpty()) {
+      ...
+  }
 
-Role: ADMIN
+* **기본 관리자 정보**:
+  * **Email**: `admin@dropfit.com`
+  * **Password**: `admin123`
+  * **Role**: `ADMIN`
+  * **Name**: `ADMIN`
 
-Name: ADMIN
+### 📦 도메인 설계 특징: 상품과 옵션 (`Item` & `ItemOption`)
 
-📦 도메인 설계 특징상품과 옵션 (Item & ItemOption)
+* 상품 하나에 여러 개의 옵션을 가질 수 있도록 `Item`과 `ItemOption`을 1:N 관계로 설계했습니다.
+  ```java
+  @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+  private List<ItemOption> options = new ArrayList<>();
 
-상품 하나에 여러 개의 옵션을 가질 수 있도록 Item과 ItemOption을 1:N 관계로 설계했습니다.
-@OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
-private List<ItemOption> options = new ArrayList<>();
+* 상품에 옵션을 추가할 때는 `addOption()` 메서드를 사용합니다.
+  ```java
+  public void addOption(ItemOption option) {
+      options.add(option);
+      option.setItem(this);
+  }
+* 양방향 연관관계의 양쪽 값을 함께 설정하도록 구현했습니다.
 
-상품에 옵션을 추가할 때는 addOption() 메서드를 사용합니다.
-public void addOption(ItemOption option) {
-    options.add(option);
-    option.setItem(this);
-}
-양방향 연관관계의 양쪽 값을 함께 설정하도록 구현했습니다.
+### 가격 검증 로직
 
-상품의 전체 재고는 각 옵션의 재고를 합산하여 계산합니다.
-
-가격 검증 로직
-
-상품 가격 변경 시 음수 가격이 입력되지 않도록 검증합니다.
-
-public void changePrice(int price) {
-    if (price < 0) {
-        throw new IllegalArgumentException("Price must be greater than or equal to 0.");
-    }
-    this.price = price;
-}
+* 상품 가격 변경 시 음수 가격이 입력되지 않도록 검증합니다.
+  ```java
+  public void changePrice(int price) {
+      if (price < 0) {
+          throw new IllegalArgumentException("Price must be greater than or equal to 0.");
+      }
+      this.price = price;
+  }
 
 src
 └── main
