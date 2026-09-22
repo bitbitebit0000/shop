@@ -72,6 +72,8 @@ Spring Boot と JPA をベースに構築したアパレル EC バックエン�
   ```java
   List<Item> items = itemService.findItems();
   model.addAttribute("items", items);
+  ```
+<img width="3016" height="1722" alt="home" src="https://github.com/user-attachments/assets/286fe6ac-7aa3-42c5-966a-bc022b6e8e42" />
 
 ### 👤 マイページ (`GET /mypage`)
 * ログイン中の会員情報を照会し、該当会員の注文履歴を併せて提供します。
