@@ -47,6 +47,7 @@ Spring Boot와 JPA를 기반으로 구현한 의류 쇼핑몰 백엔드 서비�
     ```java
     session.invalidate();
     ```
+    <img width="3003" height="1715" alt="sign" src="https://github.com/user-attachments/assets/03d11f62-fd9e-4f57-b4ab-51a4c5b587ea" />
 
 ### 🛍 상품 조회
 * **상품 목록 (`GET /items`)**
@@ -64,6 +65,7 @@ Spring Boot와 JPA를 기반으로 구현한 의류 쇼핑몰 백엔드 서비�
         items = itemService.findItemsWithOption();
     }
     ```
+    <img width="3024" height="1674" alt="ss" src="https://github.com/user-attachments/assets/ea4c0022-e0d0-4868-931b-0c6f0efda4b9" />
 
 ### 🏠 메인 페이지 (`GET /`)
 * 전체 상품을 조회하여 메인 화면에 전달합니다.
@@ -110,16 +112,6 @@ if (loginMember.getRole() != Role.ADMIN) {
 ```
  
 * 일반 사용자가 관리자 페이지에 접근할 경우 메인 페이지로 리다이렉트됩니다.
-* 전체 주문을 조회한 뒤 취소되지 않은 주문을 기준으로 총 매출을 계산합니다.
-
-```java
-int totalSales = 0;
-for (Order o : orders) {
-    if (o.getOrderStatus() != null && o.getOrderStatus() != OrderStatus.CANCEL) {
-        totalSales += o.getTotalPrice();
-    }
-}
-```
 
 * **관리자 초기 데이터 자동 생성**
   * 애플리케이션이 실행될 때 관리자 계정이 존재하지 않는 경우 기본 관리자 계정을 자동으로 생성합니다.
@@ -171,9 +163,6 @@ public void init() {
       }
       this.price = price;
   }
-
-
-
 
 ## 📊 데이터베이스 ERD (Database ERD)
 
