@@ -28,6 +28,16 @@ Spring Boot と JPA をベースに構築したアパレル EC バックエン�
 
 ## ✨ 主な機能
 
+### 🏠 メインページ (`GET /`)
+* 全商品を照会してメイン画面に渡します。
+
+  ```java
+  List<Item> items = itemService.findItems();
+  model.addAttribute("items", items);
+ ```
+
+<img width="3016" height="1722" alt="home" src="https://github.com/user-attachments/assets/286fe6ac-7aa3-42c5-966a-bc022b6e8e42" />
+
 ### 👤 会員機能
 会員登録からログイン、ログアウト、マイページまで、ECサイトの基本的な会員機能を実装しました。
 
@@ -44,9 +54,11 @@ Spring Boot と JPA をベースに構築したアパレル EC バックエン�
   * また、ログイン前にアクセスしようとしていたページがある場合、`redirectURL` をセッションに保存し、ログイン後にそのページへ遷移するように実装しました。
 * **ログアウト (`POST /logout`)**
   * ログアウト時、現在のセッションを無効化 (`invalidate`) してログイン情報を削除します。
+
     ```java
     session.invalidate();
     ```
+    
     <img width="3003" height="1715" alt="sign" src="https://github.com/user-attachments/assets/03d11f62-fd9e-4f57-b4ab-51a4c5b587ea" />
 
 ### 🛍 商品照会
@@ -65,15 +77,9 @@ Spring Boot と JPA をベースに構築したアパレル EC バックエン�
         items = itemService.findItemsWithOption();
     }
     ```
+    
  <img width="3024" height="1674" alt="ss" src="https://github.com/user-attachments/assets/ea4c0022-e0d0-4868-931b-0c6f0efda4b9" />
 
-### 🏠 メインページ (`GET /`)
-* 全商品を照会してメイン画面に渡します。
-  ```java
-  List<Item> items = itemService.findItems();
-  model.addAttribute("items", items);
-  ```
-<img width="3016" height="1722" alt="home" src="https://github.com/user-attachments/assets/286fe6ac-7aa3-42c5-966a-bc022b6e8e42" />
 
 ### 👤 マイページ (`GET /mypage`)
 * ログイン中の会員情報を照会し、該当会員の注文履歴を併せて提供します。
