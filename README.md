@@ -134,12 +134,6 @@ public void init() {
   }
   ```
 
-* **기본 관리자 정보**:
-  * **Email**: `admin@dropfit.com`
-  * **Password**: `admin123`
-  * **Role**: `ADMIN`
-  * **Name**: `ADMIN`
-
 ### 📦 도메인 설계 특징: 상품과 옵션 (`Item` & `ItemOption`)
 
 * 상품 하나에 여러 개의 옵션을 가질 수 있도록 `Item`과 `ItemOption`을 1:N 관계로 설계했습니다.
@@ -156,13 +150,13 @@ public void init() {
 * 양방향 연관관계의 양쪽 값을 함께 설정하도록 구현했습니다.
 
 
-##💳 주문 및 결제 핵심 프로세스 (OrderController)
+## 💳 주문 및 결제 핵심 프로세스 (`OrderController`)
 
-*주문 생성 및 결제 승인 처리 (POST /order)
-검증이 완료되면 주문 대기 상태(createPendingOrder)를 먼저 생성합니다.
+### 주문 생성 및 결제 승인 처리 (`POST /order`)
+* 검증이 완료되면 주문 대기 상태(`createPendingOrder`)를 먼저 생성합니다.
+* 일반 결제(`CARD` 등)인 경우 결제 승인 ID(`paymentId`)를 검증한 뒤 최종 결제 완료 처리(`completePayment`)를 수행합니다.
 
-일반 결제(CARD 등)인 경우 결제 승인 ID(paymentId)를 검증한 뒤 최종 결제 완료 처리(completePayment)를 수행합니다.
-
+```java
 Long orderId = orderService.createPendingOrder(loginMember.getId(), itemOptionId, count, payType);
 if (!"BANK".equals(payType)) {
     if (paymentId == null || paymentId.isBlank()) {
@@ -173,30 +167,16 @@ if (!"BANK".equals(payType)) {
 
 <img width="3024" height="1712" alt="22" src="https://github.com/user-attachments/assets/54c00f65-864c-42f6-84f0-bd7ab8f513f8" />
 
-* 주문 체크아웃 및 재고 수량 검증 (POST /order/checkout)
-선택한 옵션의 존재 여부를 확인하고, 재고 수량(stockQuantity)이 주문 수량보다 부족한지 검증합니다.
+### 주문 체크아웃 및 재고 수량 검증 (`POST /order/checkout`)
+* 선택한 옵션의 존재 여부를 확인하고, 재고 수량(`stockQuantity`)이 주문 수량보다 부족한지 검증합니다.
+* 재고가 부족하면 `NotEnoughStockException`을 터뜨려 에러 메시지와 함께 이전 페이지로 리다이렉트합니다.
 
-재고가 부족하면 NotEnoughStockException을 터뜨려 에러 메시지와 함께 이전 페이지로 리다이렉트합니다.
-
+```java
 if (selectedOption.getStockQuantity() < count) {
     throw new NotEnoughStockException("Not enough stock. (Current remaining stock: " + selectedOption.getStockQuantity() + " pcs)");
 }
-
-
-
-* 상품 가격 변경 시 음수 가격이 입력되지 않도록 검증합니다.
-  ```java
-  public void changePrice(int price) {
-      if (price < 0) {
-          throw new IllegalArgumentException("Price must be greater than or equal to 0.");
-      }
-      this.price = price;
-  }
   ```
 <img width="3024" height="1599" alt="ㅊㅊㅊ" src="https://github.com/user-attachments/assets/8dc78777-c967-46c1-94df-a665f667fa9c" />
-
-
-
 
 #### 3. 결제 완료 및 주문 조회 (`GET /order/complete/{orderId}`)
 * 결제 완료 후 주문 번호로 주문 정보를 조회하여 완료 페이지에 전달합니다.
@@ -208,9 +188,6 @@ model.addAttribute("payType", payType);
 return "order/order-complete";
 ```
   <img width="3024" height="1708" alt="333" src="https://github.com/user-attachments/assets/cbc29898-bd5a-4f7d-ad9c-0d2696db6d4a" />
-
-
-
 
 ## 📊 데이터베이스 ERD (Database ERD)
 
