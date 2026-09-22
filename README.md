@@ -161,7 +161,10 @@ public void init() {
       this.price = price;
   }
 
-프로젝트 아키텍처
+
+## 📂 프로젝트 아키텍처 (Project Architecture)
+
+```text
 src/main
 ├── java
 │   └── com
@@ -262,7 +265,6 @@ src/main
             ├── form.html
             ├── order-complete.html
             └── success.html
-
 
 ## 👨‍💻 Developer
 * **GitHub**: [@bitbitebit0000](https://github.com/bitbitebit0000)
