@@ -140,7 +140,7 @@ public void init() {
 }
 ```
 * 管理者アカウントがすでに存在するかどうかをメールアドレスを基準に確認します。
-* 
+
 ```java
 if (memberRepository.findByEmail("admin@dropfit.com").isEmpty()) {
   ...
