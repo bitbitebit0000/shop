@@ -88,14 +88,15 @@ Spring Boot와 JPA를 기반으로 구현한 의류 쇼핑몰 백엔드 서비�
     * **전체 주문 목록**
 
 * 관리자 페이지 접근 시 세션의 로그인 회원을 확인하고 `Role.ADMIN` 권한을 검증합니다.
-  ```java
-  Member loginMember = (Member) session.getAttribute("loginMember");
-  if (loginMember == null) {
-      return "redirect:/login";
-  }
-  if (loginMember.getRole() != Role.ADMIN) {
-      return "redirect:/";
-  }
+ ```java
+Member loginMember = (Member) session.getAttribute("loginMember");
+if (loginMember == null) {
+    return "redirect:/login";
+}
+if (loginMember.getRole() != Role.ADMIN) {
+    return "redirect:/";
+}
+ 
 * 일반 사용자가 관리자 페이지에 접근할 경우 메인 페이지로 리다이렉트됩니다.
 * 전체 주문을 조회한 뒤 취소되지 않은 주문을 기준으로 총 매출을 계산합니다.
 
