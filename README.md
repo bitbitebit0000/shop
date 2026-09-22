@@ -128,11 +128,12 @@ public void init() {
 ```
 
 * 관리자 계정이 이미 존재하는지 이메일을 기준으로 확인합니다.
-  ```java
-  if (memberRepository.findByEmail("admin@dropfit.com").isEmpty()) {
-      ...
-  }
-  ```
+
+```java
+if (memberRepository.findByEmail("admin@dropfit.com").isEmpty()) {
+  ...
+}
+```
 
 ### 📦 도메인 설계 특징: 상품과 옵션 (`Item` & `ItemOption`)
 
@@ -164,6 +165,7 @@ if (!"BANK".equals(payType)) {
     }
     orderService.completePayment(orderId, paymentId, merchantUid);
 }
+```
 
 <img width="3024" height="1712" alt="22" src="https://github.com/user-attachments/assets/54c00f65-864c-42f6-84f0-bd7ab8f513f8" />
 
@@ -175,7 +177,7 @@ if (!"BANK".equals(payType)) {
 if (selectedOption.getStockQuantity() < count) {
     throw new NotEnoughStockException("Not enough stock. (Current remaining stock: " + selectedOption.getStockQuantity() + " pcs)");
 }
-  ```
+```
 <img width="3024" height="1599" alt="ㅊㅊㅊ" src="https://github.com/user-attachments/assets/8dc78777-c967-46c1-94df-a665f667fa9c" />
 
 #### 3. 결제 완료 및 주문 조회 (`GET /order/complete/{orderId}`)
