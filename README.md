@@ -1,18 +1,18 @@
-# 🛒 DropFit (의류 쇼핑몰 백엔드 서비스)
+# 🛒 DropFit (アパレル EC バックエンドサービス)
 
-Spring Boot와 JPA를 기반으로 구현한 의류 쇼핑몰 백엔드 서비스입니다. 사용자 쇼핑 기능과 관리자 기능을 분리하고, 상품·회원·주문 도메인을 중심으로 확장 가능한 구조를 설계했습니다.
+Spring Boot と JPA をベースに構築したアパレル EC バックエンドサービスです。ユーザー用のショッピング機能と管理者機能を分離し、商品・会員・注文ドメインを中心に拡張可能な構造を設計しました。
 
 ## 🌐 Service URL
 * **Live Demo**: [http://dropfit.duckdns.org](http://dropfit.duckdns.org)
 
 ### 🔑 Test Accounts
 
-* **관리자 계정 (Admin)**
+* **Admin Account(Admin)**
   * **Email**: `admin@dropfit.com`
   * **Password**: `admin123`
   * **Role**: `ADMIN`
 
-* **일반 사용자 계정 (User)**
+* **User Account(User)**
   * **Email**: `user@123`
   * **Password**: `user123`
   * **Role**: `USER`
@@ -26,38 +26,38 @@ Spring Boot와 JPA를 기반으로 구현한 의류 쇼핑몰 백엔드 서비�
 
 ---
 
-## ✨ 주요 기능
+## ✨ 主な機能
 
-### 👤 회원 기능
-회원가입부터 로그인, 로그아웃, 마이페이지까지 기본적인 쇼핑몰 회원 기능을 구현했습니다.
+### 👤 会員機能
+会員登録からログイン、ログアウト、マイページまで、ECサイトの基本的な会員機能を実装しました。
 
-* **회원가입 (`POST /signup`)**
-  * 이메일, 비밀번호, 이름, 주소 정보를 입력하여 회원가입할 수 있습니다.
-  * 회원가입 시 `Member` 엔티티와 `Address` 객체를 생성하여 회원 정보를 저장합니다.
-* **로그인 (`POST /login`)**
-  * 로그인 성공 시 `HttpSession`에 로그인한 회원 정보를 저장합니다.
+* **会員登録 (`POST /signup`)**
+  * メールアドレス、パスワード、氏名、住所情報を入力して会員登録ができます。
+  * 会員登録時、`Member` エンティティと `Address` オブジェクトを生成して会員情報を保存します。
+* **ログイン (`POST /login`)**
+  * ログイン成功時、`HttpSession` にログイン会員情報を保存します。
     ```java
     HttpSession session = request.getSession();
     session.setAttribute("loginMember", loginMember);
     ```
-  * 로그인에 실패하면 로그인 페이지에 오류 메시지를 전달합니다. (`Invalid email or password.`)
-  * 또한 로그인 이전에 접근하려던 페이지가 있다면 `redirectURL`을 세션에 저장하여 로그인 후 해당 페이지로 이동하도록 구현했습니다.
-* **로그아웃 (`POST /logout`)**
-  * 로그아웃 시 현재 세션을 무효화(`invalidate`)하여 로그인 정보를 제거합니다.
+* ログインに失敗した場合、ログインページにエラーメッセージを渡します。 (`Invalid email or password.`)
+  * また、ログイン前にアクセスしようとしていたページがある場合、`redirectURL` をセッションに保存し、ログイン後にそのページへ遷移するように実装しました。
+* **ログアウト (`POST /logout`)**
+  * ログアウト時、現在のセッションを無効化 (`invalidate`) してログイン情報を削除します。
     ```java
     session.invalidate();
     ```
     <img width="3003" height="1715" alt="sign" src="https://github.com/user-attachments/assets/03d11f62-fd9e-4f57-b4ab-51a4c5b587ea" />
 
-### 🛍 상품 조회
-* **상품 목록 (`GET /items`)**
-  * 등록된 상품을 조회할 수 있습니다.
-  * 검색어가 존재하는 경우 상품명 또는 옵션 정보를 기준으로 검색하고, 검색어가 없는 경우 전체 상품을 조회합니다.
+### 🛍 商品照会
+* **商品一覧 (`GET /items`)**
+  * 登録されている商品を照会できます。
+  * 検索キーワードが存在する場合、商品名またはオプション情報を基準に検索し、検索キーワードがない場合は全商品を照会します。
     ```text
     /items
     /items?searchQuery=cap
     ```
-  * Controller에서 검색어 유무에 따라 다른 Service 메서드를 호출하도록 구현했습니다.
+    * Controller で検索キーワードの有無に応じて異なる Service メソッドを呼び出すように実装しました。
     ```java
     if (searchQuery != null && !searchQuery.isBlank()) {
         items = itemService.findItemsWithOptionBySearch(searchQuery);
@@ -65,44 +65,46 @@ Spring Boot와 JPA를 기반으로 구현한 의류 쇼핑몰 백엔드 서비�
         items = itemService.findItemsWithOption();
     }
     ```
-    <img width="3024" height="1674" alt="ss" src="https://github.com/user-attachments/assets/ea4c0022-e0d0-4868-931b-0c6f0efda4b9" />
+ <img width="3024" height="1674" alt="ss" src="https://github.com/user-attachments/assets/ea4c0022-e0d0-4868-931b-0c6f0efda4b9" />
 
-### 🏠 메인 페이지 (`GET /`)
-* 전체 상품을 조회하여 메인 화면에 전달합니다.
+### 🏠 メインページ (`GET /`)
+* 全商品を照会してメイン画面に渡します。
   ```java
   List<Item> items = itemService.findItems();
   model.addAttribute("items", items);
 
+### 👤 マイページ (`GET /mypage`)
+* ログイン中の会員情報を照会し、該当会員の注文履歴を併せて提供します。
+* 未ログインユーザーがアクセスした場合、ログインページへリダイレクトし、ログイン後に元々リクエストしていた `/mypage` へ戻れるように実装しました。
 
-### 👤 마이페이지 (`GET /mypage`)
-* 로그인한 회원의 정보를 조회하고 해당 회원의 주문 내역을 함께 제공합니다.
-* 로그인하지 않은 사용자가 접근하면 로그인 페이지로 이동하며, 로그인 이후 원래 요청했던 `/mypage`로 돌아올 수 있도록 구현했습니다.
-  ```java
+ ```java
   if (loginMember == null) {
       String requestURI = request.getRequestURI();
       session.setAttribute("redirectURL", requestURI);
       return "redirect:/login";
   }
+ ```
   
- * 마이페이지에서는 다음 정보를 확인할 수 있습니다:
-  * **회원 정보**: 기본 계정 및 개인 정보
-  * **주소**: 등록된 배송지 정보
-  * **주문 내역**: 사용자의 전체 주문 기록
-  * **주문 상태**: 상품 준비, 배송 중, 완료 등 주문 처리 상태
-  * **주문 상품 정보**: 주문한 상품의 상세 내역 및 옵션 정보
+* マイページでは以下の情報を確認できます:
+  * **会員情報**: 基本アカウントおよび個人情報
+  * **住所**: 登録された配送先情報
+  * **注文履歴**: ユーザーのすべての注文履歴
+  * **注文ステータス**: 商品準備中、配送中、完了などの注文処理状況
+  * **注文商品情報**: 注文した商品の詳細情報およびオプション情報
 
 <img width="3024" height="1690" alt="m" src="https://github.com/user-attachments/assets/3f02d4b5-adc7-4e8d-be6d-4dfb3d4c2322" />
 
-### 🔐 관리자 기능
-* **관리자 대시보드 (`GET /admin`)**
-  * 관리자 전용 페이지로 다음 통계 정보를 제공합니다.
-    * **전체 주문 수**
-    * **총 매출**
-    * **등록 상품 수**
-    * **전체 회원 수**
-    * **전체 주문 목록**
+### 🔐 管理者機能
+* **管理者ダッシュボード (`GET /admin`)**
+  * 管理者専用ページとして、以下の統計情報を提供します。
+    * **全注文数**
+    * **総売上**
+    * **登録商品数**
+    * **全会員数**
+    * **全注文一覧**
 
-* 관리자 페이지 접근 시 세션의 로그인 회원을 확인하고 `Role.ADMIN` 권한을 검증합니다.
+* 管理者ページへのアクセス時にセッションのログインユーザーを確認し、`Role.ADMIN` 権限を検証します。
+
  ```java
 Member loginMember = (Member) session.getAttribute("loginMember");
 if (loginMember == null) {
@@ -112,13 +114,12 @@ if (loginMember.getRole() != Role.ADMIN) {
     return "redirect:/";
 }
 ```
- 
-* 일반 사용자가 관리자 페이지에 접근할 경우 메인 페이지로 리다이렉트됩니다.
 
-* **관리자 초기 데이터 자동 생성**
-  * 애플리케이션이 실행될 때 관리자 계정이 존재하지 않는 경우 기본 관리자 계정을 자동으로 생성합니다.
-  * `ApplicationReadyEvent`를 활용하여 애플리케이션 준비가 완료된 시점에 초기화 로직을 실행합니다.
+ * 一般ユーザーが管理者ページにアクセスした場合、メインページにリダイレクトされます。
 
+* **管理者初期データの自動生成**
+  * アプリケーションの起動時に管理者アカウントが存在しない場合、デフォルトの管理者アカウントを自動的に生成します。
+  * `ApplicationReadyEvent` を利用して、アプリケーションの準備が完了した時点で初期化ロジックを実行します。
 
 ```java
 @EventListener(ApplicationReadyEvent.class)
@@ -126,36 +127,38 @@ public void init() {
     initService.dbInit();
 }
 ```
-
-* 관리자 계정이 이미 존재하는지 이메일을 기준으로 확인합니다.
-
+* 管理者アカウントがすでに存在するかどうかをメールアドレスを基準に確認します。
+* 
 ```java
 if (memberRepository.findByEmail("admin@dropfit.com").isEmpty()) {
   ...
 }
 ```
 
-### 📦 도메인 설계 특징: 상품과 옵션 (`Item` & `ItemOption`)
+### 📦 ドメイン設計の特徴：商品とオプション（`Item` & `ItemOption`）
 
-* 상품 하나에 여러 개의 옵션을 가질 수 있도록 `Item`과 `ItemOption`을 1:N 관계로 설계했습니다.
+* 1つの商品が複数のオプションを持てるように、`Item`と`ItemOption`を1:Nの関係として設計しました。
+
   ```java
   @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
   private List<ItemOption> options = new ArrayList<>();
 
-* 상품에 옵션을 추가할 때는 `addOption()` 메서드를 사용합니다.
+* 商品にオプションを追加する際は、`addOption()` メソッドを使用します。
+
   ```java
   public void addOption(ItemOption option) {
       options.add(option);
       option.setItem(this);
   }
-* 양방향 연관관계의 양쪽 값을 함께 설정하도록 구현했습니다.
+  
+* 双方向の関連関係における両方の値を同時に設定するように実装しました。
 
+## 💳 注文および決済の主要プロセス（`OrderController`）
 
-## 💳 주문 및 결제 핵심 프로세스 (`OrderController`)
+### 注文作成および決済承認処理（`POST /order`）
+* 検証が完了すると、注文待機状態（`createPendingOrder`）を先に作成します。
+* 通常決済（`CARD` など）の場合、決済承認ID（`paymentId`）を検証した後、最終的な決済完了処理（`completePayment`）を実行します。
 
-### 주문 생성 및 결제 승인 처리 (`POST /order`)
-* 검증이 완료되면 주문 대기 상태(`createPendingOrder`)를 먼저 생성합니다.
-* 일반 결제(`CARD` 등)인 경우 결제 승인 ID(`paymentId`)를 검증한 뒤 최종 결제 완료 처리(`completePayment`)를 수행합니다.
 
 ```java
 Long orderId = orderService.createPendingOrder(loginMember.getId(), itemOptionId, count, payType);
@@ -169,9 +172,9 @@ if (!"BANK".equals(payType)) {
 
 <img width="3024" height="1712" alt="22" src="https://github.com/user-attachments/assets/54c00f65-864c-42f6-84f0-bd7ab8f513f8" />
 
-### 주문 체크아웃 및 재고 수량 검증 (`POST /order/checkout`)
-* 선택한 옵션의 존재 여부를 확인하고, 재고 수량(`stockQuantity`)이 주문 수량보다 부족한지 검증합니다.
-* 재고가 부족하면 `NotEnoughStockException`을 터뜨려 에러 메시지와 함께 이전 페이지로 리다이렉트합니다.
+### 注文チェックアウトおよび在庫数量の検証（`POST /order/checkout`）
+* 選択したオプションが存在するかを確認し、在庫数量（`stockQuantity`）が注文数量より不足していないかを検証します。
+* 在庫が不足している場合は、`NotEnoughStockException` をスローし、エラーメッセージとともに前のページへリダイレクトします。
 
 ```java
 if (selectedOption.getStockQuantity() < count) {
@@ -180,8 +183,8 @@ if (selectedOption.getStockQuantity() < count) {
 ```
 <img width="3024" height="1599" alt="ㅊㅊㅊ" src="https://github.com/user-attachments/assets/8dc78777-c967-46c1-94df-a665f667fa9c" />
 
-#### 3. 결제 완료 및 주문 조회 (`GET /order/complete/{orderId}`)
-* 결제 완료 후 주문 번호로 주문 정보를 조회하여 완료 페이지에 전달합니다.
+#### 3. 決済完了および注文照会（`GET /order/complete/{orderId}`）
+* 決済完了後、注文番号で注文情報を照会し、完了ページに渡します。
 
 ```java
 Order order = orderService.findOrder(Long.valueOf(orderId));
@@ -191,11 +194,11 @@ return "order/order-complete";
 ```
   <img width="3024" height="1708" alt="333" src="https://github.com/user-attachments/assets/cbc29898-bd5a-4f7d-ad9c-0d2696db6d4a" />
 
-## 📊 데이터베이스 ERD (Database ERD)
+## 📊 データベースERD（Database ERD）
 
 <img width="1310" height="1444" alt="Diagram" src="https://github.com/user-attachments/assets/b9f16781-8df2-43c7-838a-6dcc845c8e3c" />
 
-## 📂 프로젝트 아키텍처 (Project Architecture)
+## 📂 プロジェクトアーキテクチャ（Project Architecture）
 
 ```text
 src/main
