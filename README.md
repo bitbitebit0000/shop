@@ -106,6 +106,16 @@ if (loginMember == null) {
 if (loginMember.getRole() != Role.ADMIN) {
     return "redirect:/";
 }
+일반 사용자가 관리자 페이지에 접근할 경우 메인 페이지로 리다이렉트됩니다.
+
+전체 주문을 조회한 뒤 취소되지 않은 주문을 기준으로 총 매출을 계산합니다.
+
+int totalSales = 0;
+for (Order o : orders) {
+    if (o.getOrderStatus() != null && o.getOrderStatus() != OrderStatus.CANCEL) {
+        totalSales += o.getTotalPrice();
+    }
+}
 
 관리자 초기 데이터 자동 생성
 
@@ -116,6 +126,10 @@ ApplicationReadyEvent를 활용하여 애플리케이션 준비가 완료된 시
 @EventListener(ApplicationReadyEvent.class)
 public void init() {
     initService.dbInit();
+}
+관리자 계정이 이미 존재하는지 이메일을 기준으로 확인합니다.
+if (memberRepository.findByEmail("admin@dropfit.com").isEmpty()) {
+    ...
 }
 관리자 정보
 Email: admin@dropfit.com
@@ -131,6 +145,19 @@ Name: ADMIN
 상품 하나에 여러 개의 옵션을 가질 수 있도록 Item과 ItemOption을 1:N 관계로 설계했습니다.
 @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
 private List<ItemOption> options = new ArrayList<>();
+
+상품에 옵션을 추가할 때는 addOption() 메서드를 사용합니다.
+public void addOption(ItemOption option) {
+    options.add(option);
+    option.setItem(this);
+}
+양방향 연관관계의 양쪽 값을 함께 설정하도록 구현했습니다.
+
+상품의 전체 재고는 각 옵션의 재고를 합산하여 계산합니다.
+
+가격 검증 로직
+
+상품 가격 변경 시 음수 가격이 입력되지 않도록 검증합니다.
 
 public void changePrice(int price) {
     if (price < 0) {
