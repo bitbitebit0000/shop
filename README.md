@@ -173,6 +173,12 @@ public void init() {
   }
 
 
+
+
+## 📊 데이터베이스 ERD (Database ERD)
+
+<img width="1310" height="1444" alt="Diagram" src="https://github.com/user-attachments/assets/b9f16781-8df2-43c7-838a-6dcc845c8e3c" />
+
 ## 📂 프로젝트 아키텍처 (Project Architecture)
 
 ```text
