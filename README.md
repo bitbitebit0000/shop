@@ -5,6 +5,17 @@ Spring Boot와 JPA를 기반으로 구현한 의류 쇼핑몰 백엔드 서비�
 ## 🌐 Service URL
 * **Live Demo**: [http://dropfit.duckdns.org](http://dropfit.duckdns.org)
 
+### 🔑 Test Accounts
+
+* **관리자 계정 (Admin)**
+  * **Email**: `admin@dropfit.com`
+  * **Password**: `admin123`
+  * **Role**: `ADMIN`
+
+* **일반 사용자 계정 (User)**
+  * **Email**: `user@123`
+  * **Password**: `user123`
+  * **Role**: `USER`
 ---
 
 ## 🛠 Tech Stack
