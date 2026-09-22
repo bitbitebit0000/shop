@@ -91,6 +91,8 @@ Spring Boot와 JPA를 기반으로 구현한 의류 쇼핑몰 백엔드 서비�
   * **주문 상태**: 상품 준비, 배송 중, 완료 등 주문 처리 상태
   * **주문 상품 정보**: 주문한 상품의 상세 내역 및 옵션 정보
 
+<img width="3024" height="1690" alt="m" src="https://github.com/user-attachments/assets/3f02d4b5-adc7-4e8d-be6d-4dfb3d4c2322" />
+
 ### 🔐 관리자 기능
 * **관리자 대시보드 (`GET /admin`)**
   * 관리자 전용 페이지로 다음 통계 정보를 제공합니다.
@@ -153,7 +155,34 @@ public void init() {
   }
 * 양방향 연관관계의 양쪽 값을 함께 설정하도록 구현했습니다.
 
-### 가격 검증 로직
+
+##💳 주문 및 결제 핵심 프로세스 (OrderController)
+
+*주문 생성 및 결제 승인 처리 (POST /order)
+검증이 완료되면 주문 대기 상태(createPendingOrder)를 먼저 생성합니다.
+
+일반 결제(CARD 등)인 경우 결제 승인 ID(paymentId)를 검증한 뒤 최종 결제 완료 처리(completePayment)를 수행합니다.
+
+Long orderId = orderService.createPendingOrder(loginMember.getId(), itemOptionId, count, payType);
+if (!"BANK".equals(payType)) {
+    if (paymentId == null || paymentId.isBlank()) {
+        throw new IllegalStateException("Payment approval ID (paymentId) is missing.");
+    }
+    orderService.completePayment(orderId, paymentId, merchantUid);
+}
+
+<img width="3024" height="1712" alt="22" src="https://github.com/user-attachments/assets/54c00f65-864c-42f6-84f0-bd7ab8f513f8" />
+
+* 주문 체크아웃 및 재고 수량 검증 (POST /order/checkout)
+선택한 옵션의 존재 여부를 확인하고, 재고 수량(stockQuantity)이 주문 수량보다 부족한지 검증합니다.
+
+재고가 부족하면 NotEnoughStockException을 터뜨려 에러 메시지와 함께 이전 페이지로 리다이렉트합니다.
+
+if (selectedOption.getStockQuantity() < count) {
+    throw new NotEnoughStockException("Not enough stock. (Current remaining stock: " + selectedOption.getStockQuantity() + " pcs)");
+}
+
+
 
 * 상품 가격 변경 시 음수 가격이 입력되지 않도록 검증합니다.
   ```java
@@ -163,6 +192,25 @@ public void init() {
       }
       this.price = price;
   }
+  ```
+<img width="3024" height="1599" alt="ㅊㅊㅊ" src="https://github.com/user-attachments/assets/8dc78777-c967-46c1-94df-a665f667fa9c" />
+
+
+
+
+#### 3. 결제 완료 및 주문 조회 (`GET /order/complete/{orderId}`)
+* 결제 완료 후 주문 번호로 주문 정보를 조회하여 완료 페이지에 전달합니다.
+
+```java
+Order order = orderService.findOrder(Long.valueOf(orderId));
+model.addAttribute("order", order);
+model.addAttribute("payType", payType);
+return "order/order-complete";
+```
+  <img width="3024" height="1708" alt="333" src="https://github.com/user-attachments/assets/cbc29898-bd5a-4f7d-ad9c-0d2696db6d4a" />
+
+
+
 
 ## 📊 데이터베이스 ERD (Database ERD)
 
