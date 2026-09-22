@@ -1,60 +1,56 @@
-# 🛒 DropFit - Limited Fashion Drop Commerce
+# 🛒 DropFit (의류 쇼핑몰 백엔드 서비스)
 
-> 限定数量のストリートファッション＆人気ブランドのドロップアイテムを最速で手に入れる、先着順タイムディールEコマースプラットフォームです。
+> Spring Boot 기반의 확장 가능한 이커머스 쇼핑몰 백엔드 서비스입니다. 사용자 기능과 관리자 기능을 완벽히 분리하여 안정적인 상품 주문과 쇼핑몰 운영 관리를 지원합니다.
 
 ---
 
-## 🚀 プロジェクト概要
-* **プロジェクト名:** DropFit (ドロップフィット)
-* **開発期間:** 個人プロジェクト
-* **デプロイURL:** [https://shop-m7va.onrender.com](https://shop-m7va.onrender.com)
-* **主な特徴:** 
-  * 毎週公開される限定アイテム（フーディー、スニーカーなど）のタイムドロップ構造
-  * リアルタイム在庫連動および先着順購入・注文処理ロジックの実装
-  * Spring Security 및 세션 기반의 안전한 회원 인증/권한 관리 (一般会員 / 管理者センター権限分離)
+## 🌐 Service URL
+- **Live Demo**: [http://dropfit.duckdns.org](http://dropfit.duckdns.org)
 
 ---
 
 ## 🛠 Tech Stack
-
-### **Backend**
-* Java 17+
-* Spring Boot
-* Spring Data JPA / Hibernate
-* MySQL
-* Thymeleaf
-
-### **Frontend & UI**
-* HTML5, CSS3 (Modern Flexbox & Responsive Layout)
-* JavaScript (ES6+)
-
-### **Deployment & Infra**
-* Render (Cloud Hosting)
-* Git & GitHub
+- **Backend**: Java 21, Spring Boot, Spring Data JPA
+- **Database**: PostgreSQL 18.6
+- **Build Tool**: Gradle
+- **Deployment**: AWS EC2 (Ubuntu 26.04), DuckDNS
 
 ---
 
-## ✨ 主な機能とロジック
+## ✨ Key Features & Architecture
 
-1. **ユーザー認証および権限管理 (Session & Security)**
-   * 会員登録 / ログイン / ログアウト機能
-   * Spring Session 기반 로그인 상태 유지
-   * 一般会員(`ROLE_USER`)と管理者(`ROLE_ADMIN`)の権限分離によるメニューおよびアクセス制御 (`/admin` 管理者センター保護)
+### 1. 사용자 (Customer) 서비스
+- **회원 관리**: 회원가입, 로그인 및 세션 기반 인증 처리 (`/login`, `/signup`)
+- **상품 탐색**: 카테고리별 상품 목록 조회 및 실시간 검색 기능 지원 (`/items`)
+- **마이페이지**: 개인 주문 내역 확인 및 회원 정보 관리 (`/mypage`)
 
-2. **限定商品およびドロップシステム**
-   * メインページにおけるおすすめドロップアイテムのリアルタイム表示
-   * 商品検索機能 (キーワードベース: フーディー、スニーカー、Tシャツ、ボールキャップなど)
-   * 商品別リアルタイム在庫数(`totalStockQuantity`)連動および**在庫切れ時の自動 `SOLD OUT` ボタン切り替え処理**
-
-3. **注文およびマイページ**
-   * 先着順タイムディールアイテムの即時購入(Order)プロセス
-   * マイページを通じた個人情報および注文履歴の確認
-
-4. **UI/UX最適化**
-   * ページ遷移時のヘッダーの高さおよびレイアウトのガタつき(Layout Shift)を防ぐための固定規格適用 (`height: 73px`)
-   * モバイルおよびタブレット画面に対応するレスポンシブウェブデザイン (Responsive Web)
+> 💡 **[스크린샷 삽입 공간: 쇼핑몰 메인 / 상품 목록 페이지]**
 
 ---
+
+### 2. 관리자 (Admin) 페이지
+- **관리자 전용 대시보드**: 총 주문 건수, 총 매출액, 등록된 상품 및 회원 수를 한눈에 파악할 수 있는 통계 제공 (`/admin`)
+- **권한 제어**: `Role.ADMIN` 검증 로직을 통한 일반 사용자의 관리자 페이지 접근 차단 및 보안 강화
+
+> 💡 **[스크린샷 삽입 공간: 관리자 대시보드 화면]**
+
+---
+
+### 3. 데이터베이스 및 도메인 설계
+- **상속 매핑 (Single Table Strategy)**: `Item` 추상 클래스를 중심으로 `Cap`, `Cloth` 등 상품 유형별 확장성을 고려한 JPA 엔티티 설계
+- **초기 데이터 자동 세팅**: 애플리케이션 구동 시(`ApplicationReadyEvent`) 기본 관리자 계정 자동 생성 (`InitAdminData`)
+
+---
+
+## 🚀 Getting Started (Local Development)
+
+```bash
+# Clone the repository
+git clone [https://github.com/your-username/dropfit.git](https://github.com/your-username/dropfit.git)
+
+# Build and Run
+cd dropfit
+./gradlew bootRun
 
 ## 📂 プロジェクト構造 (Architecture)
 
