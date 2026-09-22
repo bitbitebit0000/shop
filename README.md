@@ -46,10 +46,12 @@ Spring Boot と JPA をベースに構築した EC バックエンドサービ�
   * 会員登録時、`Member` エンティティと `Address` オブジェクトを生成して会員情報を保存します。
 * **ログイン (`POST /login`)**
   * ログイン成功時、`HttpSession` にログイン会員情報を保存します。
+
     ```java
     HttpSession session = request.getSession();
     session.setAttribute("loginMember", loginMember);
     ```
+    
 * ログインに失敗した場合、ログインページにエラーメッセージを渡します。 (`Invalid email or password.`)
   * また、ログイン前にアクセスしようとしていたページがある場合、`redirectURL` をセッションに保存し、ログイン後にそのページへ遷移するように実装しました。
 * **ログアウト (`POST /logout`)**
@@ -65,11 +67,13 @@ Spring Boot と JPA をベースに構築した EC バックエンドサービ�
 * **商品一覧 (`GET /items`)**
   * 登録されている商品を照会できます。
   * 検索キーワードが存在する場合、商品名またはオプション情報を基準に検索し、検索キーワードがない場合は全商品を照会します。
+
     ```text
     /items
     /items?searchQuery=cap
     ```
-    * Controller で検索キーワードの有無に応じて異なる Service メソッドを呼び出すように実装しました。
+
+     * Controller で検索キーワードの有無に応じて異なる Service メソッドを呼び出すように実装しました。
     ```java
     if (searchQuery != null && !searchQuery.isBlank()) {
         items = itemService.findItemsWithOptionBySearch(searchQuery);
