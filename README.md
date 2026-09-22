@@ -1,6 +1,6 @@
 # 🛒 DropFit
 
-Spring Boot と JPA をベースに構築したアパレル EC バックエンドサービスです。ユーザー用のショッピング機能と管理者機能を分離し、商品・会員・注文ドメインを中心に拡張可能な構造を設計しました。
+Spring Boot と JPA をベースに構築した EC バックエンドサービスです。ユーザー用のショッピング機能と管理者機能を分離し、商品・会員・注文ドメインを中心に拡張可能な構造を設計しました。
 
 ## 🌐 Service URL
 * **Live Demo**: [http://dropfit.duckdns.org](http://dropfit.duckdns.org)
