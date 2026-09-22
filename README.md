@@ -161,40 +161,110 @@ public void init() {
       this.price = price;
   }
 
-src
-└── main
-    ├── java
-    │   └── com.dropfit
-    │       ├── Controller
-    │       │   ├── admin
-    │       │   │   └── AdminDashboardController
-    │       │   ├── HomeController
-    │       │   ├── ItemController
-    │       │   ├── MemberController
-    │       │   └── MyPageController
-    │       ├── domain
-    │       │   ├── Item
-    │       │   ├── Cap
-    │       │   ├── Cloth
-    │       │   ├── ItemOption
-    │       │   ├── Member
-    │       │   ├── Order
-    │       │   ├── OrderStatus
-    │       │   └── Role
-    │       ├── repository
-    │       └── service
-    │
-    └── resources
-        ├── templates
-        │   ├── admin
-        │   │   └── dashboard.html
-        │   ├── item
-        │   │   └── item-list.html
-        │   ├── member
-        │   │   ├── login.html
-        │   │   ├── signup.html
-        │   │   └── mypage.html
-        │   └── index.html
-        │
-        └── application.yml
-  
+## 프로젝트 아키텍처
+
+src/main
+├── java
+│   └── com
+│       └── dropfit
+│           ├── Controller
+│           │   ├── HomeController.java
+│           │   ├── ItemController.java
+│           │   ├── MemberController.java
+│           │   ├── MyPageController.java
+│           │   ├── OrderController.java
+│           │   └── admin
+│           │       ├── AdminDashboardController.java
+│           │       ├── AdminItemController.java
+│           │       ├── AdminMemberController.java
+│           │       └── AdminOrderController.java
+│           ├── ShoppingApplication.java
+│           ├── domain
+│           │   ├── Address.java
+│           │   ├── Delivery.java
+│           │   ├── DeliveryStatus.java
+│           │   ├── InitAdminData.java
+│           │   ├── ItemForm.java
+│           │   ├── ItemFormDto.java
+│           │   ├── LoginForm.java
+│           │   ├── Member.java
+│           │   ├── MemberForm.java
+│           │   ├── Order.java
+│           │   ├── OrderItem.java
+│           │   ├── OrderStatus.java
+│           │   ├── Role.java
+│           │   └── item
+│           │       ├── Cap.java
+│           │       ├── Clothing.java
+│           │       ├── Item.java
+│           │       └── ItemOption.java
+│           ├── dto
+│           │   └── MyPageDto.java
+│           ├── exception
+│           │   └── NotEnoughStockException.java
+│           ├── repository
+│           │   ├── ItemOptionRepository.java
+│           │   ├── ItemRepository.java
+│           │   ├── MemberRepository.java
+│           │   └── OrderRepository.java
+│           └── service
+│               ├── InitDb.java
+│               ├── InitService.java
+│               ├── ItemService.java
+│               ├── MemberService.java
+│               └── OrderService.java
+└── resources
+    ├── application.yml
+    ├── static
+    │   └── css
+    │       ├── admin
+    │       │   ├── common.css
+    │       │   ├── create-item-form.css
+    │       │   ├── dashboard.css
+    │       │   ├── item-list.css
+    │       │   ├── members.css
+    │       │   └── orders.css
+    │       ├── index.css
+    │       ├── item
+    │       │   ├── create-item-form.css
+    │       │   └── item-list.css
+    │       ├── member
+    │       │   ├── login.css
+    │       │   ├── mypage.css
+    │       │   └── signup.css
+    │       └── order
+    │           ├── cancel.css
+    │           ├── checkout.css
+    │           ├── complete.css
+    │           ├── fail.css
+    │           ├── form.css
+    │           └── success.css
+    └── templates
+        ├── admin
+        │   ├── create-item.html
+        │   ├── dashboard.html
+        │   ├── item-list.html
+        │   ├── members.html
+        │   └── orders.html
+        ├── fragments
+        │   └── header.html
+        ├── index.html
+        ├── item
+        │   ├── create-item-form.html
+        │   └── item-list.html
+        ├── member
+        │   ├── login.html
+        │   ├── mypage.html
+        │   └── signup.html
+        └── order
+            ├── cancel.html
+            ├── checkout.html
+            ├── fail.html
+            ├── form.html
+            ├── order-complete.html
+            └── success.html
+
+        
+## 👨‍💻 Developer
+* **GitHub**: [@bitbitebit0000](https://github.com/bitbitebit0000)
+* **Email**: taewook591@gmail.com
