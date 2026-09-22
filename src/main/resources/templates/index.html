@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="google-site-verification" content="TcnEuMjWxL3jUKHUot8-xPjwkZC65RmyDX24yPFeDUU" />
+    <meta name="naver-site-verification" content="3097033f75eb0da343d57438ad310bfd9da0a6f6" />
+
+    <meta name="description" content="DropFit - The fastest limited-edition streetwear & drop item time-deal commerce.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="DropFit - Limited Fashion Drop">
+    <meta property="og:description" content="Discover limited edition hoodies and sneakers at special prices during weekly timed drops.">
+    <meta property="og:url" content="https://shop-m7va.onrender.com">
+
+    <title>DropFit - Limited Fashion Drop</title>
+
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<main class="container">
+
+    <div th:if="${errorMessage}" class="alert-error" th:text="${errorMessage}"
+         style="background-color: #ffe6e6; color: #d9534f; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; text-align: center; font-weight: 600; border: 1px solid #f5c6cb;">
+        Error message will be displayed here.
+    </div>
+
+    <div class="hero-search-section">
+        <h1 class="hero-title">Search for your favorite drop items</h1>
+        <p class="hero-subtitle">Limited edition streetwear & popular brand drop collections</p>
+
+        <form action="/items" method="get" class="search-box-form">
+            <input type="text" name="searchQuery" class="search-input" placeholder="Enter product name or keyword (e.g., hoodie, sneakers)" required>
+            <button type="submit" class="btn-search">Search</button>
+        </form>
+
+        <div class="popular-tags">
+            <span class="tag-label">Popular Keywords :</span>
+            <a th:href="@{/items(searchQuery='Hoodie')}" class="tag-chip">#Hoodie</a>
+            <a th:href="@{/items(searchQuery='Sneakers')}" class="tag-chip">#Sneakers</a>
+            <a th:href="@{/items(searchQuery='T-Shirt')}" class="tag-chip">#T-Shirt</a>
+            <a th:href="@{/items(searchQuery='Cap')}" class="tag-chip">#Cap</a>
+        </div>
+    </div>
+
+    <div class="section-title">DropFit Recommended Limited Items</div>
+
+    <div class="product-grid" th:if="${items != null and !items.empty}">
+        <div class="product-card" th:each="item : ${items}">
+            <img class="product-img"
+                 th:src="${item.imageUrl ?: 'https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=800&q=80'}"
+                 referrerpolicy="no-referrer"
+                 th:alt="${item.name}">
+
+            <div class="product-info">
+                <div class="product-title" th:text="${item.name}">Product Name</div>
+                <div class="product-price" th:text="${'$' + #numbers.formatInteger(item.price, 0, 'COMMA')}">$0</div>
+            </div>
+
+            <a th:if="${item.totalStockQuantity > 0}" th:href="@{/order(itemId=${item.id})}" class="btn-order">Buy Now</a>
+            <a th:if="${item.totalStockQuantity <= 0}" href="#" class="btn-order btn-disabled" style="cursor: not-allowed; pointer-events: none;">SOLD OUT</a>
+        </div>
+    </div>
+
+    <div th:if="${items == null or items.empty}" style="text-align: center; padding: 3rem 0; color: var(--sub-text);">
+        No recommended drop items available at the moment.
+    </div>
+
+</main>
+
+<footer>
+    <p>© 2026 <strong>DropFit</strong>. All rights reserved.</p>
+    <p style="font-size: 0.8rem; color: var(--sub-text); margin-top: 0.25rem;">
+        Powered by Spring Boot, Spring Data JPA, Thymeleaf & MySQL
+    </p>
+</footer>
+
+</body>
+</html>

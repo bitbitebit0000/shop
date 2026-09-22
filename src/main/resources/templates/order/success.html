@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropFit - Payment Successful</title>
+
+    <link rel="stylesheet" th:href="@{/css/order/success.css}">
+</head>
+<body>
+
+<main class="success-wrapper">
+    <div class="card">
+        <h2 class="title">🎉 Payment Successful!</h2>
+
+        <div class="info-group">
+            <div class="info-row">
+                <span>Order No:</span>
+                <strong th:text="${info.partner_order_id}">1</strong>
+            </div>
+            <div class="info-row">
+                <span>Product Name:</span>
+                <strong th:text="${info.item_name}">Product Name</strong>
+            </div>
+            <div class="info-row">
+                <span>Total Amount:</span>
+                <strong th:text="${#numbers.formatInteger(info.amount.total, 0, 'COMMA')} + ' KRW'">10,000 KRW</strong>
+            </div>
+            <div class="info-row">
+                <span>Payment Method:</span>
+                <strong th:text="${info.payment_method_type}">MONEY</strong>
+            </div>
+            <div class="info-row">
+                <span>Approved At:</span>
+                <span th:text="${info.approved_at}">2026-09-03</span>
+            </div>
+        </div>
+
+        <a th:href="@{/}" class="btn">Back to Home</a>
+    </div>
+</main>
+
+</body>
+</html>

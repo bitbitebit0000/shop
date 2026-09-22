@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropFit - Order Management</title>
+
+    <link rel="stylesheet" th:href="@{/css/admin/common.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}">
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar-header">DropFit Admin</div>
+    <ul class="sidebar-menu">
+        <li><a th:href="@{/admin}">Dashboard Home</a></li>
+        <li class="active"><a th:href="@{/admin/orders}">Order Management</a></li>
+        <li><a th:href="@{/admin/members}">Member Management</a></li>
+        <li><a th:href="@{/admin/items}">Item List</a></li>
+        <li><a th:href="@{/admin/items/new}">Register New Item</a></li>
+        <li><a th:href="@{/}">Back to Storefront</a></li>
+    </ul>
+</div>
+
+<div class="main-content">
+
+    <div class="header">
+        <h1>⚙️ DropFit Admin Center</h1>
+        <div class="user-info">Welcome, Administrator</div>
+    </div>
+
+    <div class="container">
+        <div class="table-box">
+            <div class="table-header">
+                <h3>Order Management</h3>
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>Order No.</th>
+                    <th>Customer Info</th>
+                    <th>Item Name</th>
+                    <th>Total Price</th>
+                    <th>Order Date</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="order : ${orders}">
+                    <td th:text="${order.orderNumber != null ? order.orderNumber : '#' + order.orderId}">#20260922-0001</td>
+
+                    <td>
+                        <th:block th:if="${order.member != null}">
+                            <span class="member-info" th:text="${order.member.name}">John Doe</span>
+                            <span class="member-id" th:if="${order.member.email != null}" th:text="'(' + ${order.member.email} + ')'">(user@test.com)</span>
+                        </th:block>
+                        <th:block th:if="${order.member == null}">
+                            <span class="member-info" style="color: #999;">Guest</span>
+                        </th:block>
+                    </td>
+
+                    <td th:text="${order.itemName != null ? order.itemName : '-'}">Overfit Drop T-Shirt</td>
+
+                    <td th:text="${order.totalPrice != null ? '$' + #numbers.formatInteger(order.totalPrice, 0, 'COMMA') : '$0'}">$39</td>
+
+                    <td th:text="${order.orderDate != null ? #temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm:ss') : '-'}">2026-09-22 02:13:00</td>
+
+                    <td>
+                        <span class="status-badge"
+                              th:classappend="${order.orderStatus?.name() == 'CANCEL' ? 'status-cancel' : 'status-order'}"
+                              th:text="${order.orderStatus}">ORDER</span>
+                    </td>
+                </tr>
+
+                <tr th:if="${orders == null or orders.isEmpty()}">
+                    <td colspan="6" style="text-align: center; color: #888; padding: 20px;">
+                        No order records found.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

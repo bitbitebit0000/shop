@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropFit - Sign Up</title>
+    <link rel="stylesheet" href="/css/member/signup.css">
+</head>
+<body>
+
+<header>
+    <a href="/" class="logo">DropFit</a>
+    <nav>
+        <a href="/items">Products</a>
+        <a href="/login">Login</a>
+    </nav>
+</header>
+
+<main class="signup-wrapper">
+    <div class="signup-card">
+        <h1 class="signup-title">Sign Up</h1>
+        <p class="signup-subtitle">Become a member of DropFit and enjoy exclusive limited-edition time-deal benefits.</p>
+
+        <form action="/signup" method="post">
+            <div class="form-group">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" id="name" class="form-input" placeholder="John" required name="name" value="">
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="form-label">Email (ID)</label>
+                <input type="email" id="email" class="form-input" placeholder="example@dropfit.com" required name="email" value="">
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" class="form-input" placeholder="Enter your password" required name="password" value="">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Address</label>
+                <div class="address-group">
+                    <input type="text" class="form-input" placeholder="City (e.g., Seoul)" id="city" name="city" value="">
+                    <input type="text" class="form-input" placeholder="Street (e.g., Teheran-ro 123)" id="street" name="street" value="">
+                </div>
+                <input type="text" class="form-input" placeholder="Zipcode (e.g., 06123)" id="zipcode" name="zipcode" value="">
+            </div>
+
+            <button type="submit" class="btn-signup">Sign Up</button>
+        </form>
+
+        <div class="signup-footer">
+            Already have an account? <a href="/login">Login</a>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>© 2026 <strong>DropFit</strong>. All rights reserved.</p>
+    <p style="font-size: 0.8rem; color: var(--sub-text); margin-top: 0.25rem;">
+        Powered by Spring Boot, Spring Data JPA, Thymeleaf & MySQL
+    </p>
+</footer>
+
+</body>
+</html>

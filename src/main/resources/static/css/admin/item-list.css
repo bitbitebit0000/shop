@@ -1,0 +1,241 @@
+@charset "UTF-8";
+
+body {
+    font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #f4f6f9;
+    display: flex;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.sidebar {
+    width: 250px;
+    min-width: 250px;
+    max-width: 250px;
+    background-color: #1a1a1a;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.sidebar-header {
+    padding: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #000;
+    text-align: center;
+    color: #ff3366;
+    letter-spacing: 1px;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 20px 0;
+    margin: 0;
+    flex-grow: 1;
+}
+
+.sidebar-menu li a {
+    display: block;
+    color: #adb5bd;
+    padding: 12px 20px;
+    text-decoration: none;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+.sidebar-menu li a:hover,
+.sidebar-menu li.active a {
+    color: #fff;
+    background-color: #333;
+    font-weight: bold;
+}
+
+.main-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.header {
+    background-color: #fff;
+    padding: 15px 30px;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h1 {
+    font-size: 20px;
+    color: #111;
+    font-weight: bold;
+    margin: 0;
+}
+
+.user-info {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.container, .container-fluid {
+    padding: 30px;
+}
+
+.table-box {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.table-box h3 {
+    font-size: 16px;
+    color: #111111;
+    font-weight: bold;
+    margin: 0;
+}
+
+table, .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #dee2e6;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: bold;
+}
+
+td {
+    color: #333333;
+}
+
+.search-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    max-width: 400px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.btn-search, .btn-search-dark {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-search:hover, .btn-search-dark:hover {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+.btn-register {
+    background-color: #ff3366;
+    color: #ffffff;
+    font-weight: bold;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.btn-register:hover {
+    background-color: #e02e5b;
+    color: #ffffff;
+}
+
+.btn-sm-edit {
+    background-color: #f8f9fa;
+    color: #333;
+    border: 1px solid #ced4da;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.btn-sm-edit:hover {
+    background-color: #e9ecef;
+    color: #000;
+}
+
+.btn-sm-delete {
+    background-color: #fff;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-sm-delete:hover {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.badge-item {
+    display: inline-block;
+    padding: 4px 8px;
+    background-color: #e3f2fd;
+    color: #1976d2;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+
+.badge-soldout {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.btn-primary, .btn-modal-save {
+    background-color: #ff3366 !important;
+    border-color: #ff3366 !important;
+    color: #ffffff !important;
+}
+
+.btn-primary:hover, .btn-modal-save:hover {
+    background-color: #e02e5b !important;
+    border-color: #e02e5b !important;
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropFit - Create Order</title>
+
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/order/form.css}">
+</head>
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<main class="container order-form-wrapper">
+    <div class="form-card">
+        <h1 class="form-title">🛒 Create Order</h1>
+
+        <div th:if="${errorMessage}" class="alert-error" th:text="${errorMessage}">
+            Insufficient stock or processing error.
+        </div>
+
+        <form th:action="@{/order}" method="get" class="form-group">
+            <label for="itemSelect" class="form-label">1. Select Product</label>
+            <select id="itemSelect" name="itemId" class="form-select" onchange="this.form.submit()">
+                <option value="" disabled th:selected="${selectedItemId == null}">-- Please select a product --</option>
+                <option th:each="item : ${items}"
+                        th:value="${item.id}"
+                        th:text="${item.name} + ' ($' + ${#numbers.formatInteger(item.price, 0, 'COMMA')} + ')'"
+                        th:selected="${item.id == selectedItemId}">
+                </option>
+            </select>
+        </form>
+
+        <form id="orderForm" th:action="@{/order/checkout}" method="post">
+            <input type="hidden" name="itemId" th:value="${selectedItemId}">
+
+            <div class="form-group">
+                <label for="memberName" class="form-label">Orderer Name</label>
+                <input type="text" id="memberName" name="memberName" class="form-control"
+                       th:value="${loginMember != null ? loginMember.name : ''}" readonly required>
+            </div>
+
+            <div class="form-group">
+                <label for="optionSelect" class="form-label">2. Select Size / Option</label>
+                <select id="optionSelect" name="itemOptionId" class="form-select" th:disabled="${options == null}" required>
+                    <option value="" selected disabled
+                            th:text="${options == null ? '-- Please select a product above first --' : '-- Please select a size --'}">
+                    </option>
+                    <option th:if="${options != null}"
+                            th:each="opt : ${options}"
+                            th:value="${opt.id}"
+                            th:disabled="${opt.stockQuantity == 0}"
+                            th:text="${opt.size} + (${opt.stockQuantity == 0} ? ' [Sold Out]' : ' (Stock: ' + ${opt.stockQuantity} + ' pcs)')">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="count" class="form-label">Order Quantity</label>
+                <input type="number" id="count" name="count" class="form-control" min="1" value="1" required>
+            </div>
+
+            <button type="submit" class="btn-submit" th:disabled="${options == null}">
+                Proceed to Checkout
+            </button>
+            <a th:href="@{/items}" class="btn-cancel">Cancel and Back to Product List</a>
+        </form>
+    </div>
+</main>
+
+<footer>
+    <p>© 2026 <strong>DropFit</strong>. All rights reserved.</p>
+    <p style="font-size: 0.8rem; color: var(--sub-text); margin-top: 0.25rem;">
+        Powered by Spring Boot, Spring Data JPA, Thymeleaf & MySQL
+    </p>
+</footer>
+
+</body>
+</html>

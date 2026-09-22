@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropFit - Payment Failed</title>
+
+    <link rel="stylesheet" th:href="@{/css/order/fail.css}">
+</head>
+<body>
+
+<main class="fail-wrapper">
+    <div class="fail-card">
+        <h2 class="title">❌ Payment Failed</h2>
+        <p class="desc">
+            An error occurred while processing your payment.<br>
+            Please check your card information or account balance and try again.
+        </p>
+
+        <div class="btn-group">
+            <a href="javascript:history.back()" class="btn btn-secondary">Try Again</a>
+            <a th:href="@{/}" class="btn btn-primary">Back to Home</a>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

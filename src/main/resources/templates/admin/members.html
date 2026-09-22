@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropFit - Member Management</title>
+
+    <link rel="stylesheet" th:href="@{/css/admin/common.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}">
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar-header">DropFit Admin</div>
+    <ul class="sidebar-menu">
+        <li><a th:href="@{/admin}">Dashboard Home</a></li>
+        <li class="active"><a th:href="@{/admin/members}">Member Management</a></li>
+        <li><a th:href="@{/admin/items}">Item List</a></li>
+        <li><a th:href="@{/admin/items/new}">Register New Item</a></li>
+        <li><a th:href="@{/}">Back to Storefront</a></li>
+    </ul>
+</div>
+
+<div class="main-content">
+
+    <div class="header">
+        <h1>⚙️ DropFit Admin Center</h1>
+        <div class="user-info">Welcome, Administrator</div>
+    </div>
+
+    <div class="container">
+        <div class="table-box">
+            <div class="table-header">
+                <h3>Member List</h3>
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>Member ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Registered Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="member : ${members}">
+                    <td th:text="${member.id}">1</td>
+                    <td th:text="${member.name}">John Doe</td>
+                    <td th:text="${member.email}">user@test.com</td>
+                    <td th:text="${member.role}">USER</td>
+                    <td th:text="${member.createdDate != null ? #temporals.format(member.createdDate, 'yyyy-MM-dd HH:mm:ss') : '-'}">2026-09-22</td>
+                </tr>
+
+                <tr th:if="${members == null or members.isEmpty()}">
+                    <td colspan="5" style="text-align: center; color: #888; padding: 20px;">
+                        No registered members found.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

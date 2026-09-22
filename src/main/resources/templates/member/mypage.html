@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropFit - My Page</title>
+
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/member/mypage.css}">
+</head>
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<main class="container">
+    <div class="mypage-grid">
+
+        <aside class="profile-card">
+            <div class="profile-avatar">👤</div>
+            <div class="profile-name" th:text="${myPage.memberName}">John Doe</div>
+            <div class="profile-email" th:text="${myPage.email}">user@example.com</div>
+
+            <div class="address-box">
+                <span class="address-title">🏠 Default Shipping Address</span>
+                <span th:text="${myPage.city} + ' ' + ${myPage.street}">123 Main Street, New York</span><br>
+                <span th:text="'(' + ${myPage.zipcode} + ')'" class="text-muted">(10001)</span>
+            </div>
+        </aside>
+
+        <section class="order-section">
+            <div class="section-title">📦 Order & Shipping Status</div>
+
+            <div th:each="order : ${myPage.orders}" class="order-card">
+                <div class="order-header">
+                    <span th:text="'Order Date: ' + ${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}">2026-09-03 14:20</span>
+                    <span th:text="'Order No: #' + ${order.orderNumber}">#20260912-A8F39C2E</span>
+                </div>
+
+                <div class="order-body">
+                    <div>
+                        <div class="item-name" th:text="${order.itemName}">Premium Gaming Keyboard</div>
+                        <div class="item-details"
+                             th:text="${order.count} + ' pcs | $' + ${#numbers.formatInteger(order.totalPrice, 0, 'COMMA')}">
+                            1 pcs | $89.00
+                        </div>
+                    </div>
+
+                    <div class="status-box">
+                        <div class="badge-wrapper">
+                            <span th:if="${order.orderStatus.name() == 'PAID'}" class="badge badge-paid">Paid</span>
+                            <span th:if="${order.orderStatus.name() == 'BEFORE_PAYMENT'}" class="badge badge-ready">Payment Pending</span>
+
+                            <span th:if="${order.deliveryStatus == 'SHIPPED'}" class="badge badge-shipped">Shipped</span>
+                            <span th:if="${order.deliveryStatus == 'DELIVERED'}" class="badge badge-delivered">Delivered</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(myPage.orders)}" class="order-card empty-orders">
+                No recent orders or shipping history found.
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<footer>
+    <p>© 2026 <strong>DropFit</strong>. All rights reserved.</p>
+    <p style="font-size: 0.8rem; color: var(--sub-text); margin-top: 0.25rem;">
+        Powered by Spring Boot, Spring Data JPA, Thymeleaf & MySQL
+    </p>
+</footer>
+
+</body>
+</html>

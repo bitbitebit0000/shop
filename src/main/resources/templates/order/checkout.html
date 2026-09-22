@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropFit - Checkout</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
+
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/order/checkout.css}">
+</head>
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<main class="container checkout-wrapper">
+    <div class="pay-card">
+        <div class="pay-header">
+            <h1 class="pay-title">CHECKOUT</h1>
+            <p class="pay-subtitle">Please review your order details and total amount.</p>
+        </div>
+
+        <hr class="section-divider">
+
+        <div class="summary-box">
+            <div class="summary-row">
+                <span>Product Name</span>
+                <strong th:text="${item.name}">Test Product</strong>
+            </div>
+            <div class="summary-row">
+                <span>Quantity</span>
+                <strong th:text="${count} + ' pcs'">1 pcs</strong>
+            </div>
+            <div class="summary-row total-price">
+                <span>Total Payment</span>
+                <span th:text="${#numbers.formatInteger(item.price * count, 3, 'COMMA') + ' KRW'}">10,000 KRW</span>
+            </div>
+        </div>
+
+        <div class="pay-method-box">
+            <div class="pay-method-info">
+                <span>💳 Payments</span>
+            </div>
+            <span class="badge">TEST</span>
+        </div>
+
+        <div class="btn-group">
+            <a th:href="@{/}" class="btn btn-cancel">Cancel</a>
+            <button type="button" class="btn btn-pay" onclick="requestPayment()">
+                <span th:text="${#numbers.formatInteger(item.price * count, 3, 'COMMA') + ' KRW Pay'}">10,000 KRW Pay</span>
+            </button>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>© 2026 <strong>DropFit</strong>. All rights reserved.</p>
+    <p style="font-size: 0.8rem; color: var(--sub-text); margin-top: 0.25rem;">
+        Powered by Spring Boot, Spring Data JPA, Thymeleaf & MySQL
+    </p>
+</footer>
+
+<script th:inline="javascript">
+    async function requestPayment() {
+        try {
+            const itemName = [[${item.name}]] || "Test Product";
+            const buyerName = [[${loginMember != null ? loginMember.name : 'Customer'}]];
+            const totalAmount = parseInt([[${item.price * count}]]) || 100;
+            const paymentId = "payment_" + new Date().getTime() + "_" + Math.random().toString(36).substring(2, 9);
+
+            const currentHost = window.location.origin;
+            const myRedirectUrl = currentHost + "/order/mobile-callback" +
+                "?paymentId=" + paymentId +
+                "&payType=CARD" +
+                "&itemId=" + [[${item.id}]] +
+                "&itemOptionId=" + [[${itemOptionId}]] +
+                "&count=" + [[${count}]];
+
+            const response = await PortOne.requestPayment({
+                storeId: "store-d2633782-0b69-4e60-a973-58fe459f36d2",
+                channelKey: "channel-key-22656e59-ed7f-4afb-a240-c9c60e139235",
+                paymentId: paymentId,
+                orderName: itemName,
+                totalAmount: totalAmount,
+                currency: "CURRENCY_KRW",
+                payMethod: "CARD",
+                windowType: {
+                    pc: "IFRAME",
+                    mobile: "REDIRECTION"
+                },
+                customer: {
+                    fullName: buyerName,
+                },
+                redirectUrl: myRedirectUrl
+            });
+
+            if (!response) {
+                alert("Payment was not processed.");
+                return;
+            }
+
+            if (response.code != null) {
+                alert(`[Payment Failed] ${response.message} (Error Code: ${response.code})`);
+                return;
+            }
+
+            window.location.href = myRedirectUrl;
+
+        } catch (error) {
+            console.error("Payment Exception:", error);
+            alert("⚠️ [Payment Error]: " + (error.message || "An unknown error occurred."));
+        }
+    }
+</script>
+
+</body>
+</html>

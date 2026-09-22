@@ -1,0 +1,6 @@
+    /gradlew text eol=lf
+    *.bat text eol=crlf
+    *.jar binary
+
+    src/main/resources/templates/**/*.html linguist-vendored
+    src/main/resources/static/** linguist-vendored

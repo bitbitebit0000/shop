@@ -1,0 +1,104 @@
+:root {
+    --bg: #f8f9fa;
+    --card-bg: #ffffff;
+    --text: #212529;
+    --sub-text: #6c757d;
+    --border: #e9ecef;
+    --accent: #111827;
+    --primary-red: #ff3366;
+    --danger: #dc2626;
+}
+
+.form-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+}
+
+.form-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--accent);
+    padding-left: 0.6rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--text);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus {
+    border-color: var(--accent);
+    box-shadow: none;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 1rem;
+}
+
+.btn-submit:hover {
+    background: #1f2937;
+    color: #fff;
+}
+
+.btn-cancel {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 0.75rem;
+    padding: 0.6rem;
+    color: var(--sub-text);
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+
+.btn-cancel:hover {
+    text-decoration: underline;
+    color: var(--text);
+}
+
+.btn-add-option {
+    background-color: var(--card-bg);
+    border: 1px dashed var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.85rem;
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 6px;
+    margin-top: 0.5rem;
+}
+
+.btn-add-option:hover {
+    background-color: var(--bg);
+}

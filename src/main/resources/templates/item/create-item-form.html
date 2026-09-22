@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropFit Admin - Register New Item</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet" th:href="@{/css/admin/common.css}">
+    <link rel="stylesheet" th:href="@{/css/item/create-item-form.css}">
+</head>
+<body>
+
+<div th:replace="~{admin/fragments/sidebar :: sidebar('create-item')}"></div>
+
+<div class="main-content">
+
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="container my-4">
+        <div class="form-card">
+            <h1 class="form-title">🛍️ Register New Item</h1>
+
+            <form th:action="@{/items/new}" th:object="${itemForm}" method="post">
+
+                <div class="form-group">
+                    <label for="name" class="form-label">Item Name</label>
+                    <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="e.g. [DropFit] Signature Overfit T-Shirt" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="price" class="form-label">Price ($)</label>
+                    <input type="number" id="price" th:field="*{price}" class="form-control" placeholder="Enter price (e.g. 39)" min="0" step="1" required>
+                </div>
+
+                <hr class="my-4">
+
+                <div class="form-group">
+                    <label class="form-label d-flex justify-content-between align-items-center">
+                        <span>Options & Inventory</span>
+                        <span class="text-muted fw-normal" style="font-size: 0.75rem;">Enter stock by size/color</span>
+                    </label>
+
+                    <div id="option-container">
+                        <div class="row g-2 mb-2 option-row">
+                            <div class="col-7">
+                                <input type="text" name="optionNames" class="form-control" placeholder="Option (e.g. M / Black)" required>
+                            </div>
+                            <div class="col-4">
+                                <input type="number" name="stockQuantities" class="form-control" placeholder="Stock" min="0" required>
+                            </div>
+                            <div class="col-1 d-flex align-items-center">
+                                <button type="button" class="btn-close btn-remove-option" aria-label="Delete" style="display: none;"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-add-option" onclick="addOptionRow()">+ Add Option</button>
+                </div>
+
+                <button type="submit" class="btn-submit">Complete Registration</button>
+                <a href="/admin/items" class="btn-cancel">Cancel and Back to List</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function addOptionRow() {
+        const container = document.getElementById('option-container');
+        const newRow = document.createElement('div');
+        newRow.className = 'row g-2 mb-2 option-row';
+        newRow.innerHTML = `
+            <div class="col-7">
+                <input type="text" name="optionNames" class="form-control" placeholder="Option (e.g. L / White)" required>
+            </div>
+            <div class="col-4">
+                <input type="number" name="stockQuantities" class="form-control" placeholder="Stock" min="0" required>
+            </div>
+            <div class="col-1 d-flex align-items-center">
+                <button type="button" class="btn-close btn-remove-option" onclick="removeOptionRow(this)" aria-label="Delete"></button>
+            </div>
+        `;
+        container.appendChild(newRow);
+        updateRemoveButtons();
+    }
+
+    function removeOptionRow(button) {
+        const row = button.closest('.option-row');
+        row.remove();
+        updateRemoveButtons();
+    }
+
+    function updateRemoveButtons() {
+        const rows = document.querySelectorAll('.option-row');
+        rows.forEach((row, index) => {
+            const removeBtn = row.querySelector('.btn-remove-option');
+            if (removeBtn) {
+                removeBtn.style.display = rows.length > 1 ? 'block' : 'none';
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

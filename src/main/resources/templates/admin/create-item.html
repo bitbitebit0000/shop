@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropFit - Register New Item</title>
+
+    <link rel="stylesheet" th:href="@{/css/admin/common.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}">
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar-header">DropFit Admin</div>
+    <ul class="sidebar-menu">
+        <li><a th:href="@{/admin}">Dashboard Home</a></li>
+        <li><a th:href="@{/admin/members}">Member Management</a></li>
+        <li><a th:href="@{/admin/items}">Item List</a></li>
+        <li class="active"><a th:href="@{/admin/items/new}">Register New Item</a></li>
+        <li><a th:href="@{/}">Back to Storefront</a></li>
+    </ul>
+</div>
+
+<div class="main-content">
+    <div class="header">
+        <h1>⚙️ DropFit Admin Center</h1>
+        <div class="user-info">Welcome, Administrator</div>
+    </div>
+
+    <div class="container">
+        <div class="form-box">
+            <div class="form-header">
+                <h3>📦 Register New Item</h3>
+                <a th:href="@{/admin/items}" class="btn-list">&larr; Back to Item List</a>
+            </div>
+
+            <form th:action="@{/admin/items/new}" method="post" id="itemForm">
+
+                <div class="section-title">Item Category</div>
+
+                <div class="form-group">
+                    <label for="itemType">Item Type</label>
+                    <select class="form-control" id="itemType" name="itemType" onchange="toggleSpecificFields()" required>
+                        <option value="">-- Select Category --</option>
+                        <option value="CLOTHING">Clothing</option>
+                        <option value="CAP">Cap</option>
+                    </select>
+                </div>
+
+                <hr class="divider">
+
+                <div class="section-title">Basic Information</div>
+
+                <div class="form-group">
+                    <label for="name">Item Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="e.g. Overfit Drop T-Shirt" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="price">Price ($)</label>
+                    <input type="number" class="form-control" id="price" name="price" min="0" placeholder="e.g. 39" required>
+                </div>
+
+                <div id="clothingFields" style="display: none;">
+                    <hr class="divider">
+                    <div class="section-title">Clothing Attributes</div>
+
+                    <div class="form-group">
+                        <label for="fabric">Fabric</label>
+                        <input type="text" class="form-control" id="fabric" name="fabric" placeholder="e.g. 100% Cotton">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fit">Fit</label>
+                        <input type="text" class="form-control" id="fit" name="fit" placeholder="e.g. Overfitted / Regular">
+                    </div>
+                </div>
+
+                <div id="capFields" style="display: none;">
+                    <hr class="divider">
+                    <div class="section-title">Cap Attributes</div>
+
+                    <div class="form-group">
+                        <label for="adjustType">Adjust Type</label>
+                        <input type="text" class="form-control" id="adjustType" name="adjustType" placeholder="e.g. Strapback / Snapback">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="capType">Cap Type</label>
+                        <input type="text" class="form-control" id="capType" name="capType" placeholder="e.g. Ball Cap / Bucket Hat">
+                    </div>
+                </div>
+
+                <hr class="divider">
+
+                <div class="section-title" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>Option & Stock Settings</span>
+                    <button type="button" class="btn-add-option" onclick="addOptionRow()">+ Add Option</button>
+                </div>
+
+                <div id="optionContainer">
+                    <div class="option-row" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
+                        <input type="text" class="form-control option-name" name="optionNames" placeholder="Option Name (e.g. M / Black)" required style="flex: 2;">
+                        <input type="number" class="form-control option-stock" name="optionStocks" min="0" placeholder="Stock (e.g. 50)" required style="flex: 2;">
+                        <button type="button" class="btn-remove-option" onclick="removeOptionRow(this)" style="padding: 7px 12px; background: #dc3545; color: #fff; border: none; border-radius: 4px; cursor: pointer;">Delete</button>
+                    </div>
+                </div>
+
+                <hr class="divider" style="margin: 20px 0;">
+
+                <button type="submit" class="btn-submit" style="width: 100%; padding: 12px; background: #ff3366; color: #fff; border: none; border-radius: 4px; font-weight: bold; font-size: 15px; cursor: pointer;">Complete Item Registration</button>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleSpecificFields() {
+        const itemType = document.getElementById('itemType').value;
+        const clothingFields = document.getElementById('clothingFields');
+        const capFields = document.getElementById('capFields');
+
+        if (itemType === 'CLOTHING') {
+            clothingFields.style.display = 'block';
+            capFields.style.display = 'none';
+        } else if (itemType === 'CAP') {
+            clothingFields.style.display = 'none';
+            capFields.style.display = 'block';
+        } else {
+            clothingFields.style.display = 'none';
+            capFields.style.display = 'none';
+        }
+    }
+
+    function addOptionRow() {
+        const container = document.getElementById('optionContainer');
+
+        const newRow = document.createElement('div');
+        newRow.className = 'option-row';
+        newRow.style.cssText = 'display: flex; gap: 10px; margin-bottom: 10px; align-items: center;';
+        newRow.innerHTML = `
+            <input type="text" class="form-control option-name" name="optionNames" placeholder="Option Name (e.g. L / White)" required style="flex: 2;">
+            <input type="number" class="form-control option-stock" name="optionStocks" min="0" placeholder="Stock (e.g. 30)" required style="flex: 2;">
+            <button type="button" class="btn-remove-option" onclick="removeOptionRow(this)" style="padding: 7px 12px; background: #dc3545; color: #fff; border: none; border-radius: 4px; cursor: pointer;">Delete</button>
+        `;
+
+        container.appendChild(newRow);
+    }
+
+    function removeOptionRow(button) {
+        const rows = document.querySelectorAll('.option-row');
+        if (rows.length <= 1) {
+            alert('At least one option is required.');
+            return;
+        }
+        button.closest('.option-row').remove();
+    }
+</script>
+
+</body>
+</html>

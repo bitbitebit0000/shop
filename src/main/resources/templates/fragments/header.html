@@ -1,0 +1,25 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<header th:fragment="header">
+    <a href="/" class="logo">DropFit</a>
+    <nav>
+        <a th:if="${session.loginMember == null or !#strings.contains(session.loginMember.role, 'ADMIN')}" href="/items">Products</a>
+
+        <a th:if="${session.loginMember != null and (#strings.toString(session.loginMember.role) == 'ADMIN' or #strings.toString(session.loginMember.role) == 'ROLE_ADMIN')}"
+           href="/admin" class="nav-admin-link">⚙️ Admin Center</a>
+
+        <a th:if="${session.loginMember != null and !#strings.contains(session.loginMember.role, 'ADMIN')}"
+           href="/mypage">My Page</a>
+
+        <form th:if="${session.loginMember != null}" th:action="@{/logout}" method="post" class="logout-form">
+            <button type="submit" class="btn-logout">Logout</button>
+        </form>
+
+        <a th:if="${session.loginMember == null}" href="/login">Login</a>
+        <a th:if="${session.loginMember == null}" href="/signup">Sign Up</a>
+    </nav>
+</header>
+
+</body>
+</html>
