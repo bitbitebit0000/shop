@@ -96,6 +96,7 @@ if (loginMember == null) {
 if (loginMember.getRole() != Role.ADMIN) {
     return "redirect:/";
 }
+```
  
 * 일반 사용자가 관리자 페이지에 접근할 경우 메인 페이지로 리다이렉트됩니다.
 * 전체 주문을 조회한 뒤 취소되지 않은 주문을 기준으로 총 매출을 계산합니다.
@@ -107,6 +108,7 @@ for (Order o : orders) {
         totalSales += o.getTotalPrice();
     }
 }
+```
 
 * **관리자 초기 데이터 자동 생성**
   * 애플리케이션이 실행될 때 관리자 계정이 존재하지 않는 경우 기본 관리자 계정을 자동으로 생성합니다.
@@ -118,12 +120,14 @@ for (Order o : orders) {
 public void init() {
     initService.dbInit();
 }
+```
 
 * 관리자 계정이 이미 존재하는지 이메일을 기준으로 확인합니다.
   ```java
   if (memberRepository.findByEmail("admin@dropfit.com").isEmpty()) {
       ...
   }
+  ```
 
 * **기본 관리자 정보**:
   * **Email**: `admin@dropfit.com`
