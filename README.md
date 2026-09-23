@@ -119,6 +119,7 @@ Spring Boot と JPA をベースに構築した EC バックエンドサービ�
 <img width="3024" height="1701" alt="dddd" src="https://github.com/user-attachments/assets/5a7e02ee-bf6e-4803-91fe-b4581b3a6391" />
 
 
+
 * 管理者ページへのアクセス時にセッションのログインユーザーを確認し、`Role.ADMIN` 権限を検証します。
 
  ```java
