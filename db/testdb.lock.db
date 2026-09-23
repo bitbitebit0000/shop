@@ -1,6 +1,6 @@
 #FileLock
-#Tue Sep 22 09:27:51 KST 2026
-hostName=218.38.137.27
-id=1a0c681fda2461883e3e02b8331f10d83ad480d9c4b
+#Tue Sep 22 20:58:16 KST 2026
+hostName=10.nate.com
+id=1a0c8fb1fb3932608a44a96ae3108e7479c45c9ed8b
 method=file
-server=218.38.137.27\:62068
+server=10.85.222.97\:64923

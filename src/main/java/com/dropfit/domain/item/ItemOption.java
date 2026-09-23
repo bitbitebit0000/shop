@@ -17,8 +17,8 @@ public class ItemOption {
     @Column(name = "item_option_id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
     private Item item;
 
     private String optionName;

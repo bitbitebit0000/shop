@@ -3,6 +3,7 @@ package com.dropfit.Controller.admin;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.dropfit.domain.Member;
@@ -24,6 +25,7 @@ public class AdminDashboardController {
     private final MemberService memberService;
 
     @GetMapping("/admin")
+    @Transactional(readOnly = true)
     public String adminMain(HttpSession session, Model model) {
         Member loginMember = (Member) session.getAttribute("loginMember");
 
@@ -39,7 +41,6 @@ public class AdminDashboardController {
 
         int totalOrders = orders.size();
 
-        // 💡 람다식 대신 일반 for 문을 사용하여 총 매출 계산
         int totalSales = 0;
         for (Order o : orders) {
             if (o.getOrderStatus() != null && o.getOrderStatus() != OrderStatus.CANCEL) {
